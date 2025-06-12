@@ -3,8 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, User, Moon, Sun } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Menu, X, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 export function Header() {
@@ -28,12 +27,9 @@ export function Header() {
             <Link href="/search" className="text-foreground/80 hover:text-foreground transition-colors">
               Restaurants
             </Link>
-            <Link href="/bookings" className="text-foreground/80 hover:text-foreground transition-colors">
-              My Bookings
-            </Link>
           </nav>
 
-          {/* User Menu */}
+          {/* Right side actions */}
           <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
@@ -45,23 +41,6 @@ export function Header() {
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
             </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-xl">
-                <DropdownMenuItem asChild>
-                  <Link href="/bookings">My Bookings</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/admin/dashboard">Admin Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>Sign Out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Mobile Menu Button */}
             <Button
@@ -85,13 +64,6 @@ export function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Restaurants
-              </Link>
-              <Link
-                href="/bookings"
-                className="text-foreground/80 hover:text-foreground transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                My Bookings
               </Link>
             </nav>
           </div>

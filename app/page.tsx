@@ -1,10 +1,30 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { HeroSearchBar } from "@/components/home/hero-search-bar"
 import { FeaturedCarousel } from "@/components/home/featured-carousel"
-import { mockRestaurants } from "@/lib/mock-data"
+import { api } from "@/lib/api"
+import type { Restaurant } from "@/lib/types"
 
 export default function HomePage() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    loadRestaurants()
+  }, [])
+
+  const loadRestaurants = async () => {
+    try {
+      const data = await api.getRestaurants()
+      setRestaurants(data)
+    } catch (error) {
+      console.error("Error loading restaurants:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleSearch = (query: string) => {
     console.log("Search query:", query)
   }
@@ -12,7 +32,13 @@ export default function HomePage() {
   return (
     <div>
       <HeroSearchBar onSearch={handleSearch} />
-      <FeaturedCarousel restaurants={mockRestaurants} />
+      {isLoading ? (
+        <div className="py-16 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mx-auto"></div>
+        </div>
+      ) : (
+        <FeaturedCarousel restaurants={restaurants} />
+      )}
 
       {/* Trust Indicators */}
       <section className="py-16 bg-muted/50">

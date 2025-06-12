@@ -6,6 +6,7 @@ import { BookingDialog } from "@/components/reservation/booking-dialog"
 import { mockRestaurants } from "@/lib/mock-data"
 import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
 
 interface RestaurantPageProps {
   params: {
@@ -44,7 +45,14 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[1, 2, 3, 4].map((item) => (
                     <div key={item} className="flex space-x-4 p-4 border rounded-xl">
-                      <div className="w-16 h-16 bg-muted rounded-lg"></div>
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                        <Image
+                          src={`/placeholder.svg?height=64&width=64`}
+                          alt={`Dish ${item}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                       <div>
                         <h4 className="font-medium">Signature Dish {item}</h4>
                         <p className="text-sm text-muted-foreground">Delicious description</p>
@@ -66,7 +74,14 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
                   {[1, 2, 3].map((review) => (
                     <div key={review} className="border-b pb-4 last:border-b-0">
                       <div className="flex items-center space-x-2 mb-2">
-                        <div className="w-8 h-8 bg-muted rounded-full"></div>
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                          <Image
+                            src={`/placeholder.svg?height=32&width=32`}
+                            alt={`Reviewer ${review}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                         <div>
                           <p className="font-medium text-sm">Customer {review}</p>
                           <div className="flex items-center space-x-1">

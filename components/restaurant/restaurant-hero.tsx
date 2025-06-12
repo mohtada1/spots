@@ -18,7 +18,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
           {/* Image */}
           <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
             <Image
-              src={restaurant.imageUrl || "/placeholder.svg"}
+              src={`/placeholder.svg?height=600&width=800`}
               alt={restaurant.name}
               fill
               className="object-cover"

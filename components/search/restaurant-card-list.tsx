@@ -60,7 +60,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
           <div className="flex flex-col md:flex-row">
             <div className="relative h-48 md:h-32 md:w-48 overflow-hidden">
               <Image
-                src={restaurant.imageUrl || "/placeholder.svg"}
+                src={`/placeholder.svg?height=200&width=200`}
                 alt={restaurant.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"

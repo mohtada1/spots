@@ -4,25 +4,31 @@ export interface Restaurant {
   city: string
   cuisine: string[]
   halal: boolean
-  priceLevel: string
+  price_level: string
   rating: number
-  imageUrl: string
-  availableSlots: string[]
-  description?: string
-  address?: string
-  phone?: string
+  image_url: string | null
+  description?: string | null
+  address?: string | null
+  phone?: string | null
+  available_slots: string[]
+  created_at?: string
+  updated_at?: string
 }
 
 export interface Reservation {
   id: string
-  restaurantId: string
-  userId: string
-  partySize: number
-  slot: string
+  restaurant_id: string
+  customer_name: string
+  customer_phone: string
+  customer_email?: string | null
+  party_size: number
+  reservation_date: string
+  reservation_time: string
   status: "pending" | "confirmed" | "cancelled"
-  customerName: string
-  customerPhone: string
-  notes?: string
+  special_requests?: string | null
+  confirmation_code: string
+  created_at?: string
+  updated_at?: string
   restaurant?: Restaurant
 }
 
@@ -31,4 +37,10 @@ export interface SearchFilters {
   cuisine: string[]
   halal: boolean | null
   priceLevel: string[]
+}
+
+export interface AdminUser {
+  id: string
+  email: string
+  created_at: string
 }

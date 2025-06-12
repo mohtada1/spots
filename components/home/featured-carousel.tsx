@@ -67,7 +67,7 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
               <Link href={`/restaurant/${restaurant.id}`}>
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={restaurant.imageUrl || "/placeholder.svg"}
+                    src={`/placeholder.svg?height=300&width=400`}
                     alt={restaurant.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Search, Filter } from "lucide-react"
 import { FilterSidebar } from "@/components/search/filter-sidebar"
 import { RestaurantCardList } from "@/components/search/restaurant-card-list"
-import { mockRestaurants } from "@/lib/mock-data"
+import { api } from "@/lib/api"
 import type { SearchFilters, Restaurant } from "@/lib/types"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
@@ -15,7 +15,7 @@ function SearchPageContent() {
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "")
   const [isLoading, setIsLoading] = useState(false)
-  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>(mockRestaurants)
+  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
   const [filters, setFilters] = useState<SearchFilters>({
     city: searchParams.get("city") || "",
     cuisine: [],
@@ -27,16 +27,23 @@ function SearchPageContent() {
     filterRestaurants()
   }, [filters, searchQuery])
 
-  const filterRestaurants = () => {
+  const filterRestaurants = async () => {
     setIsLoading(true)
 
-    // Simulate API delay
-    setTimeout(() => {
-      let filtered = mockRestaurants
+    try {
+      // Create search filters
+      const searchFilters: Partial<SearchFilters> = {}
 
-      // Filter by search query
+      if (filters.city) searchFilters.city = filters.city
+      if (filters.cuisine.length > 0) searchFilters.cuisine = filters.cuisine
+      if (filters.halal !== null) searchFilters.halal = filters.halal
+      if (filters.priceLevel.length > 0) searchFilters.priceLevel = filters.priceLevel
+
+      let restaurants = await api.getRestaurants(searchFilters)
+
+      // Filter by search query on frontend for now
       if (searchQuery) {
-        filtered = filtered.filter(
+        restaurants = restaurants.filter(
           (restaurant) =>
             restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             restaurant.cuisine.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -44,29 +51,13 @@ function SearchPageContent() {
         )
       }
 
-      // Filter by city
-      if (filters.city) {
-        filtered = filtered.filter((restaurant) => restaurant.city.toLowerCase() === filters.city.toLowerCase())
-      }
-
-      // Filter by cuisine
-      if (filters.cuisine.length > 0) {
-        filtered = filtered.filter((restaurant) => restaurant.cuisine.some((c) => filters.cuisine.includes(c)))
-      }
-
-      // Filter by halal
-      if (filters.halal === true) {
-        filtered = filtered.filter((restaurant) => restaurant.halal)
-      }
-
-      // Filter by price level
-      if (filters.priceLevel.length > 0) {
-        filtered = filtered.filter((restaurant) => filters.priceLevel.includes(restaurant.priceLevel))
-      }
-
-      setFilteredRestaurants(filtered)
+      setFilteredRestaurants(restaurants)
+    } catch (error) {
+      console.error("Error filtering restaurants:", error)
+      setFilteredRestaurants([])
+    } finally {
       setIsLoading(false)
-    }, 500)
+    }
   }
 
   const handleSearch = () => {
