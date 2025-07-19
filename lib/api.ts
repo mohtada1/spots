@@ -38,14 +38,25 @@ export const api = {
   },
 
   async getRestaurant(id: string): Promise<Restaurant | null> {
+    if (!id) {
+      console.error('No restaurant ID provided')
+      return null
+    }
+    
     try {
-      const response = await fetch(`/api/restaurants/${id}`)
-      const result = await response.json()
+      const response = await fetch(`/api/restaurants/${encodeURIComponent(id)}`)
       
-      if (!result.success) {
+      if (!response.ok) {
         if (response.status === 404) {
           return null
         }
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      
+      if (!result.success) {
         throw new Error(result.error || 'Failed to fetch restaurant')
       }
       

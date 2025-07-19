@@ -1,22 +1,17 @@
 "use client"
-import { useState, use, useEffect } from "react"
+import { useState, useEffect } from "react"
+import { useParams, notFound } from "next/navigation"
 import { RestaurantHero } from "@/components/restaurant/restaurant-hero"
 import { AvailabilityPicker } from "@/components/restaurant/availability-picker"
 import { BookingDialog } from "@/components/reservation/booking-dialog"
 import { api } from "@/lib/api"
-import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import type { Restaurant } from "@/lib/types"
 
-interface RestaurantPageProps {
-  params: Promise<{
-    id: string
-  }>
-}
-
-export default function RestaurantPage({ params }: RestaurantPageProps) {
-  const { id } = use(params)
+export default function RestaurantPage() {
+  const params = useParams()
+  const id = Array.isArray(params.id) ? params.id[0] : params.id
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false)
