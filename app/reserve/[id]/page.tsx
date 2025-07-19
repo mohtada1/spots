@@ -1,19 +1,20 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react"
 import { ReservationForm } from "@/components/reservation/reservation-form"
 import { mockRestaurants } from "@/lib/mock-data"
 import { notFound } from "next/navigation"
 
 interface ReservePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function ReservePage({ params }: ReservePageProps) {
+  const { id } = use(params)
   const [reservationDetails, setReservationDetails] = useState<any>(null)
-  const restaurant = mockRestaurants.find((r) => r.id === params.id)
+  const restaurant = mockRestaurants.find((r) => r.id === id)
 
   useEffect(() => {
     const details = sessionStorage.getItem("reservationDetails")

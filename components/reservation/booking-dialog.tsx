@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { api } from "@/lib/api"
 
 interface BookingDialogProps {
   restaurant: Restaurant
@@ -49,40 +50,57 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
     setIsSubmitting(true)
     setStep("processing")
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      // Create actual reservation in Supabase
+      const reservation = await api.createReservation({
+        restaurant_id: restaurant.id,
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        customer_email: formData.email,
+        party_size: selectedSlot.partySize,
+        reservation_date: selectedSlot.date,
+        reservation_time: selectedSlot.time,
+        special_requests: formData.notes || null,
+      })
 
-    // Create reservation ID
-    const reservationId = `res-${Date.now()}`
+      // Store reservation for confirmation page
+      sessionStorage.setItem(
+        "pendingReservation",
+        JSON.stringify({
+          ...reservation,
+          restaurant,
+        }),
+      )
 
-    // Store reservation for confirmation page
-    sessionStorage.setItem(
-      "pendingReservation",
-      JSON.stringify({
-        id: reservationId,
-        restaurant,
-        ...selectedSlot,
-        ...formData,
-        status: "confirmed",
-      }),
-    )
+      setStep("confirmed")
+      setIsSubmitting(false)
 
-    setStep("confirmed")
-    setIsSubmitting(false)
+      // Show success toast
+      toast({
+        title: "Reservation Created!",
+        description: `Your table at ${restaurant.name} has been reserved. Confirmation code: ${reservation.confirmation_code}`,
+        variant: "default",
+        duration: 8000,
+      })
 
-    // Show toast notification
-    toast({
-      title: "Reservation Confirmed!",
-      description: `Your table at ${restaurant.name} has been reserved. Check your phone for SMS confirmation.`,
-      variant: "success",
-      duration: 5000,
-    })
-
-    // Redirect after a short delay
-    setTimeout(() => {
-      onClose()
-      router.push("/bookings")
-    }, 3000)
+      // Redirect to pending page after delay
+      setTimeout(() => {
+        onClose()
+        router.push(`/pending/${reservation.id}`)
+      }, 3000)
+      
+    } catch (error) {
+      console.error('Error creating reservation:', error)
+      setIsSubmitting(false)
+      setStep("form")
+      
+      toast({
+        title: "Reservation Failed",
+        description: "Sorry, we couldn't process your reservation. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      })
+    }
   }
 
   const formatDate = (dateString: string) => {

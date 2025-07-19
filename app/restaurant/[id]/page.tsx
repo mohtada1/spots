@@ -1,23 +1,57 @@
 "use client"
-import { useState } from "react"
+import { useState, use, useEffect } from "react"
 import { RestaurantHero } from "@/components/restaurant/restaurant-hero"
 import { AvailabilityPicker } from "@/components/restaurant/availability-picker"
 import { BookingDialog } from "@/components/reservation/booking-dialog"
-import { mockRestaurants } from "@/lib/mock-data"
+import { api } from "@/lib/api"
 import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
+import type { Restaurant } from "@/lib/types"
 
 interface RestaurantPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function RestaurantPage({ params }: RestaurantPageProps) {
-  const restaurant = mockRestaurants.find((r) => r.id === params.id)
+  const { id } = use(params)
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string; partySize: number } | null>(null)
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        setIsLoading(true)
+        const restaurantData = await api.getRestaurant(id)
+        if (!restaurantData) {
+          notFound()
+        }
+        setRestaurant(restaurantData)
+      } catch (error) {
+        console.error('Error fetching restaurant:', error)
+        notFound()
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchRestaurant()
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading restaurant...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!restaurant) {
     notFound()

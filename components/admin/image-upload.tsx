@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Upload, X, ImageIcon } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { blobStorage } from "@/lib/blob-storage"
+
 import Image from "next/image"
 
 interface ImageUploadProps {
@@ -59,32 +59,24 @@ export function ImageUpload({
     setIsUploading(true)
 
     try {
-      // Create preview
+      // Create preview URL for local display
       const preview = URL.createObjectURL(file)
       setPreviewUrl(preview)
-
-      // Upload to blob storage
-      const imageUrl =
-        type === "menu"
-          ? await blobStorage.uploadMenuImage(file, restaurantId)
-          : await blobStorage.uploadRestaurantImage(file, restaurantId)
-
-      // Clean up preview
-      URL.revokeObjectURL(preview)
-
-      setPreviewUrl(imageUrl)
-      onImageUploaded(imageUrl)
+      
+      // For now, we'll use the local preview URL
+      // In a real app, you would upload to your preferred storage service
+      onImageUploaded(preview)
 
       toast({
-        title: "Image uploaded successfully",
-        description: "The image has been saved",
+        title: "Image selected successfully",
+        description: "The image preview has been loaded",
         variant: "success",
       })
     } catch (error) {
-      console.error("Upload error:", error)
+      console.error("File processing error:", error)
       toast({
-        title: "Upload failed",
-        description: "Failed to upload image. Please try again.",
+        title: "File processing failed",
+        description: "Failed to process image. Please try again.",
         variant: "destructive",
       })
       setPreviewUrl(currentImageUrl || null)
@@ -100,20 +92,24 @@ export function ImageUpload({
     if (!previewUrl) return
 
     try {
-      await blobStorage.deleteRestaurantImage(previewUrl)
+      // Clean up the preview URL if it's a local object URL
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl)
+      }
+      
       setPreviewUrl(null)
       onImageDeleted?.()
 
       toast({
-        title: "Image deleted",
-        description: "The image has been removed",
+        title: "Image removed",
+        description: "The image preview has been cleared",
         variant: "success",
       })
     } catch (error) {
       console.error("Delete error:", error)
       toast({
         title: "Delete failed",
-        description: "Failed to delete image. Please try again.",
+        description: "Failed to remove image. Please try again.",
         variant: "destructive",
       })
     }

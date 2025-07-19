@@ -4,68 +4,82 @@ import type { Restaurant, Reservation, SearchFilters } from "./types"
 export const api = {
   // Restaurant operations
   async getRestaurants(filters?: Partial<SearchFilters>): Promise<Restaurant[]> {
-    let query = supabase.from("restaurants").select("*")
+    try {
+      const searchParams = new URLSearchParams()
+      
+      if (filters?.city) {
+        searchParams.append('city', filters.city)
+      }
+      
+      if (filters?.cuisine && filters.cuisine.length > 0) {
+        searchParams.append('cuisine', filters.cuisine.join(','))
+      }
+      
+      if (filters?.halal === true) {
+        searchParams.append('halal', 'true')
+      }
+      
+      if (filters?.priceLevel && filters.priceLevel.length > 0) {
+        searchParams.append('price_level', filters.priceLevel.join(','))
+      }
 
-    if (filters?.city) {
-      query = query.ilike("city", `%${filters.city}%`)
-    }
-
-    if (filters?.cuisine && filters.cuisine.length > 0) {
-      query = query.overlaps("cuisine", filters.cuisine)
-    }
-
-    if (filters?.halal === true) {
-      query = query.eq("halal", true)
-    }
-
-    if (filters?.priceLevel && filters.priceLevel.length > 0) {
-      query = query.in("price_level", filters.priceLevel)
-    }
-
-    const { data, error } = await query.order("rating", { ascending: false })
-
-    if (error) {
+      const response = await fetch(`/api/restaurants?${searchParams.toString()}`)
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch restaurants')
+      }
+      
+      return result.data || []
+    } catch (error) {
       console.error("Error fetching restaurants:", error)
       throw new Error("Failed to fetch restaurants")
     }
-
-    return data || []
   },
 
   async getRestaurant(id: string): Promise<Restaurant | null> {
-    const { data, error } = await supabase.from("restaurants").select("*").eq("id", id).single()
-
-    if (error) {
+    try {
+      const response = await fetch(`/api/restaurants/${id}`)
+      const result = await response.json()
+      
+      if (!result.success) {
+        if (response.status === 404) {
+          return null
+        }
+        throw new Error(result.error || 'Failed to fetch restaurant')
+      }
+      
+      return result.data
+    } catch (error) {
       console.error("Error fetching restaurant:", error)
       return null
     }
-
-    return data
   },
 
   // Reservation operations
   async createReservation(
-    reservation: Omit<Reservation, "id" | "created_at" | "updated_at" | "confirmation_code">,
+    reservation: Omit<Reservation, "id" | "created_at" | "updated_at" | "confirmation_code" | "status">,
   ): Promise<Reservation> {
-    // Generate confirmation code
-    const confirmationCode = Math.random().toString(36).substr(2, 8).toUpperCase()
-
-    const { data, error } = await supabase
-      .from("reservations")
-      .insert({
-        ...reservation,
-        confirmation_code: confirmationCode,
-        status: "pending",
+    try {
+      const response = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reservation),
       })
-      .select()
-      .single()
-
-    if (error) {
+      
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create reservation')
+      }
+      
+      return result.data
+    } catch (error) {
       console.error("Error creating reservation:", error)
       throw new Error("Failed to create reservation")
     }
-
-    return data
   },
 
   async getReservationByCode(confirmationCode: string): Promise<Reservation | null> {

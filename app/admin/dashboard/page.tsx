@@ -21,6 +21,7 @@ function AdminDashboardContent() {
 
   useEffect(() => {
     fetchReservations()
+    fetchRestaurants()
   }, [])
 
   const fetchReservations = async () => {
@@ -51,6 +52,35 @@ function AdminDashboardContent() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchRestaurants = async () => {
+    try {
+      if (!session?.access_token) {
+        throw new Error("No access token")
+      }
+
+      const response = await fetch("/api/admin/restaurants", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setRestaurants(result.data)
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error("Error fetching restaurants:", error)
+      toast({
+        title: "Error",
+        description: "Failed to fetch restaurants",
+        variant: "destructive",
+      })
     }
   }
 
@@ -100,16 +130,113 @@ function AdminDashboardContent() {
   const confirmedReservations = reservations.filter((r) => r.status === "confirmed")
   const totalReservations = reservations.length
 
-  const handleRestaurantUpdated = (restaurant: Restaurant) => {
-    setRestaurants((prev) => prev.map((r) => (r.id === restaurant.id ? restaurant : r)))
+  const handleRestaurantUpdated = async (restaurant: Restaurant) => {
+    try {
+      if (!session?.access_token) {
+        throw new Error("No access token")
+      }
+
+      const response = await fetch(`/api/admin/restaurants/${restaurant.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(restaurant),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setRestaurants((prev) => prev.map((r) => (r.id === restaurant.id ? result.data : r)))
+        toast({
+          title: "Success",
+          description: "Restaurant updated successfully",
+          variant: "default",
+        })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error("Error updating restaurant:", error)
+      toast({
+        title: "Error",
+        description: "Failed to update restaurant",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleRestaurantDeleted = (id: string) => {
-    setRestaurants((prev) => prev.filter((r) => r.id !== id))
+  const handleRestaurantDeleted = async (id: string) => {
+    try {
+      if (!session?.access_token) {
+        throw new Error("No access token")
+      }
+
+      const response = await fetch(`/api/admin/restaurants/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setRestaurants((prev) => prev.filter((r) => r.id !== id))
+        toast({
+          title: "Success",
+          description: "Restaurant deleted successfully",
+          variant: "default",
+        })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error("Error deleting restaurant:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete restaurant",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleRestaurantCreated = (restaurant: Restaurant) => {
-    setRestaurants((prev) => [...prev, restaurant])
+  const handleRestaurantCreated = async (restaurant: Omit<Restaurant, "id" | "created_at" | "updated_at">) => {
+    try {
+      if (!session?.access_token) {
+        throw new Error("No access token")
+      }
+
+      const response = await fetch(`/api/admin/restaurants`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(restaurant),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setRestaurants((prev) => [...prev, result.data])
+        toast({
+          title: "Success",
+          description: "Restaurant created successfully",
+          variant: "default",
+        })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error("Error creating restaurant:", error)
+      toast({
+        title: "Error",
+        description: "Failed to create restaurant",
+        variant: "destructive",
+      })
+    }
   }
 
   if (isLoading) {

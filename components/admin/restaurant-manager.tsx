@@ -16,9 +16,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 interface RestaurantManagerProps {
   restaurants: Restaurant[]
-  onRestaurantUpdated: (restaurant: Restaurant) => void
-  onRestaurantDeleted: (id: string) => void
-  onRestaurantCreated: (restaurant: Restaurant) => void
+  onRestaurantUpdated: (restaurant: Restaurant) => Promise<void>
+  onRestaurantDeleted: (id: string) => Promise<void>
+  onRestaurantCreated: (restaurant: Omit<Restaurant, "id" | "created_at" | "updated_at">) => Promise<void>
 }
 
 export function RestaurantManager({
@@ -75,9 +75,8 @@ export function RestaurantManager({
       }
 
       if (isCreating) {
-        // Create new restaurant
-        const newRestaurant: Restaurant = {
-          id: `restaurant-${Date.now()}`,
+        // Create new restaurant via API
+        const newRestaurantData = {
           name: formData.name!,
           city: formData.city!,
           cuisine: formData.cuisine!,
@@ -89,18 +88,15 @@ export function RestaurantManager({
           address: formData.address || null,
           phone: formData.phone || null,
           available_slots: formData.available_slots || [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
         }
-        onRestaurantCreated(newRestaurant)
+        await onRestaurantCreated(newRestaurantData)
         setIsCreating(false)
       } else {
-        // Update existing restaurant
+        // Update existing restaurant via API
         const updatedRestaurant: Restaurant = {
           ...(formData as Restaurant),
-          updated_at: new Date().toISOString(),
         }
-        onRestaurantUpdated(updatedRestaurant)
+        await onRestaurantUpdated(updatedRestaurant)
         setEditingId(null)
       }
 
@@ -123,7 +119,7 @@ export function RestaurantManager({
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this restaurant?")) {
       try {
-        onRestaurantDeleted(id)
+        await onRestaurantDeleted(id)
         toast({
           title: "Restaurant deleted",
           description: "The restaurant has been removed",
