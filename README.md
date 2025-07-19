@@ -1,28 +1,42 @@
-# Image Analysis
+# Spots - Restaurant Reservation System
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A modern restaurant reservation system built with Next.js and Supabase.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/mohtada1s-projects/v0-image-analysis)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/QANMMD6hr0L)
+## Features
 
-## Overview
+- Browse restaurants with filters (cuisine, location, price level)
+- Make online reservations
+- Admin dashboard for restaurant management
+- Real-time reservation status updates
+- Responsive design for all devices
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## Tech Stack
 
-## Deployment
+- **Frontend**: Next.js 14 with TypeScript
+- **Styling**: Tailwind CSS + Radix UI
+- **Backend**: Supabase (Auth + Database)
+- **Deployment**: Vercel
 
-Your project is live at:
+## Getting Started
 
-**[https://vercel.com/mohtada1s-projects/v0-image-analysis](https://vercel.com/mohtada1s-projects/v0-image-analysis)**
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables (see `.env.example`)
+4. Run the development server: `npm run dev`
 
-## Build your app
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
 
 Continue building your app on:
 
 **[https://v0.dev/chat/projects/QANMMD6hr0L](https://v0.dev/chat/projects/QANMMD6hr0L)**
-
-## How It Works
 
 1. Create and modify your project using [v0.dev](https://v0.dev)
 2. Deploy your chats from the v0 interface
