@@ -57,15 +57,17 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
 
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-food-medium shadow-xl p-food-lg md:p-food-xl">
-            <div className="flex flex-col md:flex-row gap-food-md items-end">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-4xl">
               {/* City Selector */}
-              <div className="flex-1">
+              <div className="w-full sm:w-48">
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
-                  <SelectTrigger className="rounded-food-small border-input">
-                    <MapPin className="h-4 w-4 mr-2 text-gray-600" />
-                    <SelectValue placeholder="Select City" />
+                  <SelectTrigger className="h-12 rounded-lg border-2 border-white/20 bg-white text-gray-700 font-medium">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <SelectValue placeholder="Select City" />
+                    </div>
                   </SelectTrigger>
-                  <SelectContent className="rounded-food-small">
+                  <SelectContent className="rounded-lg">
                     <SelectItem value="karachi">Karachi</SelectItem>
                     <SelectItem value="lahore">Lahore</SelectItem>
                     <SelectItem value="islamabad">Islamabad</SelectItem>
@@ -75,16 +77,16 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
               </div>
 
               {/* Search Input */}
-              <div className="flex-2">
+              <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
                   <Input
                     type="text"
-                    placeholder="Search restaurants, cuisine, or location..."
+                    placeholder="Search restaurants, cuisine..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="pl-10 rounded-food-small"
+                    className="h-12 pl-10 rounded-lg border-2 border-white/20 bg-white text-gray-700 placeholder:text-gray-500"
                   />
                 </div>
               </div>
@@ -92,10 +94,10 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
               {/* Search Button */}
               <Button 
                 onClick={handleSearch} 
-                className="px-food-xl py-food-md text-lg font-semibold bg-food-primary hover:bg-food-primary/90 text-white min-w-[120px] h-12"
+                className="h-12 px-6 sm:px-8 bg-food-primary hover:bg-food-primary/90 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 flex items-center gap-2 whitespace-nowrap"
               >
-                <Search className="h-5 w-5 mr-2" />
-                Search
+                <Search className="h-4 w-4" />
+                <span className="hidden sm:inline">Search</span>
               </Button>
             </div>
           </div>
