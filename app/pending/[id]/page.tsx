@@ -1,18 +1,13 @@
 "use client"
 
-import { useEffect, useState, use } from "react"
+import { useEffect, useState } from "react"
+import { useParams, notFound } from "next/navigation"
 import { AwaitConfirmationBanner } from "@/components/reservation/await-confirmation-banner"
 import type { Reservation } from "@/lib/types"
-import { notFound } from "next/navigation"
 
-interface PendingPageProps {
-  params: Promise<{
-    id: string
-  }>
-}
-
-export default function PendingPage({ params }: PendingPageProps) {
-  const { id } = use(params)
+export default function PendingPage() {
+  const params = useParams()
+  const id = Array.isArray(params.id) ? params.id[0] : params.id
   const [reservation, setReservation] = useState<Reservation | null>(null)
 
   useEffect(() => {
