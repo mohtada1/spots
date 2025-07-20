@@ -58,12 +58,16 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
           className="rounded-xl overflow-hidden transition-shadow hover:shadow-lg group border-0 shadow-md"
         >
           <div className="flex flex-col md:flex-row">
-            <div className="relative h-48 md:h-32 md:w-48 overflow-hidden">
+            <div className="relative h-48 md:h-32 md:w-48 overflow-hidden bg-gray-100">
               <Image
-                src={`/placeholder.svg?height=200&width=200`}
+                src={restaurant.image_url || '/placeholder.svg?height=200&width=200'}
                 alt={restaurant.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/placeholder.svg?height=200&width=200';
+                }}
               />
               {restaurant.halal && (
                 <Badge className="absolute top-2 right-2 bg-foreground text-background rounded-full">Halal</Badge>
@@ -84,7 +88,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span>{restaurant.rating}</span>
                     </div>
-                    <span>{restaurant.priceLevel}</span>
+                    <span>{restaurant.price_level}</span>
                     <div className="flex items-center space-x-1">
                       <MapPin className="h-4 w-4" />
                       <span>{restaurant.city}</span>

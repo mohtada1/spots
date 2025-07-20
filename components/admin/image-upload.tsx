@@ -1,20 +1,17 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Upload, X, ImageIcon } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-
-import Image from "next/image"
+import React, { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Upload, X, ImageIcon } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
+import Image from 'next/image'
 
 interface ImageUploadProps {
   currentImageUrl?: string | null
   onImageUploaded: (url: string) => void
   onImageDeleted?: () => void
-  restaurantId: string
+  restaurantId?: string
   type?: "restaurant" | "menu"
   className?: string
 }
@@ -28,29 +25,32 @@ export function ImageUpload({
   className = "",
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return
 
+    const file = files[0]
+    
     // Validate file type
-    if (!file.type.startsWith("image/")) {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
       toast({
         title: "Invalid file type",
-        description: "Please select an image file",
+        description: "Please upload a JPEG, PNG, or WebP image.",
         variant: "destructive",
       })
       return
     }
 
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
       toast({
         title: "File too large",
-        description: "Please select an image smaller than 5MB",
+        description: "Please upload an image smaller than 5MB.",
         variant: "destructive",
       })
       return
@@ -59,107 +59,156 @@ export function ImageUpload({
     setIsUploading(true)
 
     try {
-      // Create preview URL for local display
-      const preview = URL.createObjectURL(file)
-      setPreviewUrl(preview)
-      
-      // For now, we'll use the local preview URL
-      // In a real app, you would upload to your preferred storage service
-      onImageUploaded(preview)
+      const formData = new FormData()
+      formData.append('file', file)
 
-      toast({
-        title: "Image selected successfully",
-        description: "The image preview has been loaded",
-        variant: "success",
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
       })
+
+      const result = await response.json()
+
+      if (result.success) {
+        onImageUploaded(result.url)
+        toast({
+          title: "Image uploaded successfully",
+          description: "Your restaurant image has been uploaded.",
+        })
+      } else {
+        throw new Error(result.error || 'Upload failed')
+      }
     } catch (error) {
-      console.error("File processing error:", error)
+      console.error('Upload error:', error)
       toast({
-        title: "File processing failed",
-        description: "Failed to process image. Please try again.",
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
         variant: "destructive",
       })
-      setPreviewUrl(currentImageUrl || null)
     } finally {
       setIsUploading(false)
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""
-      }
     }
   }
 
-  const handleDelete = async () => {
-    if (!previewUrl) return
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
 
-    try {
-      // Clean up the preview URL if it's a local object URL
-      if (previewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewUrl)
-      }
-      
-      setPreviewUrl(null)
-      onImageDeleted?.()
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(e.dataTransfer.files)
+    }
+  }
 
-      toast({
-        title: "Image removed",
-        description: "The image preview has been cleared",
-        variant: "success",
-      })
-    } catch (error) {
-      console.error("Delete error:", error)
-      toast({
-        title: "Delete failed",
-        description: "Failed to remove image. Please try again.",
-        variant: "destructive",
-      })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(e.target.files)
+    }
+  }
+
+  const handleButtonClick = () => {
+    inputRef.current?.click()
+  }
+
+  const handleDelete = () => {
+    if (onImageDeleted) {
+      onImageDeleted()
     }
   }
 
   return (
-    <Card className={`rounded-xl border-2 border-dashed ${className}`}>
-      <CardContent className="p-6">
-        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-
-        {previewUrl ? (
-          <div className="relative">
-            <div className="relative w-full h-48 rounded-lg overflow-hidden">
-              <Image src={previewUrl || "/placeholder.svg"} alt="Preview" fill className="object-cover" />
+    <Card className={className}>
+      <CardContent className="p-4">
+        {currentImageUrl ? (
+          <div className="space-y-4">
+            <div className="relative">
+              <Image
+                src={currentImageUrl}
+                alt="Restaurant"
+                width={400}
+                height={300}
+                className="w-full h-48 object-cover rounded-lg border"
+              />
+              {onImageDeleted && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={handleDelete}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
-            <div className="flex justify-between mt-4">
-              <Button
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="rounded-xl"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Replace Image
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleDelete}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl"
-              >
-                <X className="h-4 w-4 mr-2" />
-                Remove
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <ImageIcon className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-medium mb-2">Upload Image</h3>
-            <p className="text-muted-foreground text-sm mb-4">Select an image file (JPEG, PNG, WebP) up to 5MB</p>
             <Button
-              onClick={() => fileInputRef.current?.click()}
+              type="button"
+              variant="outline"
+              onClick={handleButtonClick}
               disabled={isUploading}
-              className="booking-highlight rounded-xl"
+              className="w-full"
             >
               <Upload className="h-4 w-4 mr-2" />
-              {isUploading ? "Uploading..." : "Choose Image"}
+              {isUploading ? 'Uploading...' : 'Replace Image'}
             </Button>
+          </div>
+        ) : (
+          <div
+            className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+              dragActive
+                ? 'border-primary bg-primary/5'
+                : 'border-gray-300 hover:border-gray-400'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleChange}
+              disabled={isUploading}
+            />
+            
+            <div className="space-y-4">
+              <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                <ImageIcon className="h-6 w-6 text-gray-400" />
+              </div>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  {isUploading ? 'Uploading...' : 'Upload restaurant image'}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Drag and drop or click to select (JPEG, PNG, WebP - Max 5MB)
+                </p>
+              </div>
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleButtonClick}
+                disabled={isUploading}
+                className="mt-2"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {isUploading ? 'Uploading...' : 'Choose File'}
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>

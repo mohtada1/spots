@@ -16,13 +16,17 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
+          <div className="relative h-64 md:h-96 rounded-xl overflow-hidden bg-gray-100">
             <Image
-              src={`/placeholder.svg?height=600&width=800`}
+              src={restaurant.image_url || '/placeholder.svg?height=600&width=800'}
               alt={restaurant.name}
               fill
               className="object-cover"
               priority
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder.svg?height=600&width=800';
+              }}
             />
             {restaurant.halal && (
               <Badge className="absolute top-4 right-4 bg-foreground text-background rounded-full">
@@ -47,7 +51,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
                   <span className="font-medium">{restaurant.rating}</span>
                   <span className="text-sm">(124 reviews)</span>
                 </div>
-                <span className="text-lg font-medium">{restaurant.priceLevel}</span>
+                <span className="text-lg font-medium">{restaurant.price_level}</span>
               </div>
 
               <div className="space-y-2 text-muted-foreground">
