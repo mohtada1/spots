@@ -1,5 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase"
+
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
 import type { Restaurant } from "@/lib/types"
 
 export async function GET(request: NextRequest) {

@@ -18,7 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
 import { api } from "@/lib/api"
 
 interface BookingDialogProps {
@@ -35,9 +34,7 @@ interface BookingDialogProps {
 export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: BookingDialogProps) {
   const [step, setStep] = useState<"form" | "processing" | "confirmed">("form")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [confirmationCode, setConfirmationCode] = useState<string | null>(null)
   const { toast } = useToast()
-  const router = useRouter()
 
   const [formData, setFormData] = useState({
     name: "Ali Ahmed",
@@ -64,32 +61,20 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
         special_requests: formData.notes || null,
       })
 
-      // Store reservation for confirmation page
-      sessionStorage.setItem(
-        "pendingReservation",
-        JSON.stringify({
-          ...reservation,
-          restaurant,
-        }),
-      )
-
-      // Set confirmation code for display
-      setConfirmationCode(reservation.confirmation_code)
       setStep("confirmed")
       setIsSubmitting(false)
 
       // Show success toast
       toast({
-        title: "Reservation Created!",
-        description: `Your table at ${restaurant.name} has been reserved. Confirmation code: ${reservation.confirmation_code}`,
+        title: "Booking Request Received!",
+        description: "You will receive a confirmation via SMS.",
         variant: "default",
-        duration: 8000,
+        duration: 5000,
       })
 
-      // Redirect to pending page after delay
+      // Auto-close dialog after showing confirmation
       setTimeout(() => {
-        onClose()
-        router.push(`/pending/${reservation.id}`)
+        handleClose()
       }, 3000)
       
     } catch (error) {
@@ -109,7 +94,6 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
   const resetDialog = () => {
     setStep("form")
     setIsSubmitting(false)
-    setConfirmationCode(null)
     setFormData({
       name: "Ali Ahmed",
       phone: "+92-300-1234567",
@@ -264,36 +248,16 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
               <div className="w-16 h-16 bg-foreground rounded-full flex items-center justify-center mb-4">
                 <CheckCircle className="h-8 w-8 text-background" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Reservation Confirmed!</h3>
-              <p className="text-muted-foreground mb-4">
-                Your table at {restaurant.name} has been reserved. Check your phone for SMS confirmation.
+              <h3 className="text-xl font-semibold mb-2">Booking Request Received!</h3>
+              <p className="text-muted-foreground mb-6">
+                Your booking request has been received. You will receive a confirmation via SMS.
               </p>
-              {confirmationCode && (
-                <div className="bg-muted p-4 rounded-lg mb-4">
-                  <p className="text-sm text-muted-foreground mb-1">Your confirmation code:</p>
-                  <p className="font-mono text-lg font-semibold">{confirmationCode}</p>
-                </div>
-              )}
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => {
-                    if (confirmationCode) {
-                      router.push(`/pending/${confirmationCode}`)
-                    }
-                  }} 
-                  className="booking-highlight rounded-xl"
-                  disabled={!confirmationCode}
-                >
-                  Check Status
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={handleClose} 
-                  className="rounded-xl"
-                >
-                  Close
-                </Button>
-              </div>
+              <Button 
+                onClick={handleClose} 
+                className="booking-highlight rounded-xl"
+              >
+                Continue
+              </Button>
             </div>
           </div>
         )}
