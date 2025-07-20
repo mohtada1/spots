@@ -15,26 +15,13 @@ interface FeaturedCarouselProps {
 
 export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-
-  useEffect(() => {
-    if (!isAutoPlaying) return
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % Math.ceil(restaurants.length / 3))
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [restaurants.length, isAutoPlaying])
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % Math.ceil(restaurants.length / 3))
-    setIsAutoPlaying(false)
   }
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev - 1 + Math.ceil(restaurants.length / 3)) % Math.ceil(restaurants.length / 3))
-    setIsAutoPlaying(false)
   }
 
   const visibleRestaurants = restaurants.slice(currentIndex * 3, (currentIndex + 1) * 3)
