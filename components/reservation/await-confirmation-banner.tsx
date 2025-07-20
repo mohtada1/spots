@@ -38,10 +38,10 @@ export function AwaitConfirmationBanner({ reservation }: AwaitConfirmationBanner
 
   useEffect(() => {
     if (status === "confirmed") {
-      // Auto-redirect to bookings page after confirmation
+      // Auto-redirect to home page after confirmation
       setTimeout(() => {
-        router.push("/bookings")
-      }, 3000)
+        router.push("/")
+      }, 5000)
     }
   }, [status, router])
 
@@ -115,7 +115,7 @@ export function AwaitConfirmationBanner({ reservation }: AwaitConfirmationBanner
                   <span>Date & Time</span>
                 </span>
                 <span className="font-medium">
-                  {formatDate(reservation.slot)} at {reservation.slot.split("T")[1]}
+                  {formatDate(reservation.reservation_date)} at {reservation.reservation_time}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -124,7 +124,7 @@ export function AwaitConfirmationBanner({ reservation }: AwaitConfirmationBanner
                   <span>Party Size</span>
                 </span>
                 <span className="font-medium">
-                  {reservation.partySize} {reservation.partySize === 1 ? "person" : "people"}
+                  {reservation.party_size} {reservation.party_size === 1 ? "person" : "people"}
                 </span>
               </div>
             </div>
@@ -137,11 +137,10 @@ export function AwaitConfirmationBanner({ reservation }: AwaitConfirmationBanner
             </div>
           </div>
 
-          {reservation.notes && (
-            <div className="border-t pt-4">
-              <span className="text-gray-600 text-sm">Special Requests:</span>
-              <p className="text-sm mt-1">{reservation.notes}</p>
-            </div>
+          {reservation.special_requests && (
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Special Requests:</span> {reservation.special_requests}
+            </p>
           )}
         </CardContent>
       </Card>
@@ -150,14 +149,17 @@ export function AwaitConfirmationBanner({ reservation }: AwaitConfirmationBanner
         <div className="space-y-4">
           <div className="bg-[#14B45C] bg-opacity-10 border border-[#14B45C] border-opacity-20 rounded-lg p-4">
             <p className="text-[#14B45C] text-sm font-medium mb-2">
-              ✓ SMS confirmation sent to {reservation.customerPhone}
+              ✓ SMS confirmation sent to {reservation.customer_phone}
             </p>
             <p className="text-xs text-gray-600">Please arrive 10 minutes before your reservation time.</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={() => router.push("/bookings")} className="btn-primary flex-1">
-              View My Bookings
+            <Button 
+              onClick={() => router.push(`/pending/${reservation.confirmation_code}`)} 
+              className="btn-primary flex-1"
+            >
+              Check Status
             </Button>
             <Button onClick={() => router.push("/")} variant="outline" className="flex-1">
               Book Another Table

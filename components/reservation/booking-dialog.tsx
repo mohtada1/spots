@@ -245,12 +245,35 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
                 <CheckCircle className="h-8 w-8 text-background" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Reservation Confirmed!</h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-4">
                 Your table at {restaurant.name} has been reserved. Check your phone for SMS confirmation.
               </p>
-              <Button onClick={() => router.push("/bookings")} className="booking-highlight rounded-xl">
-                View My Bookings
-              </Button>
+              {confirmationCode && (
+                <div className="bg-muted p-4 rounded-lg mb-4">
+                  <p className="text-sm text-muted-foreground mb-1">Your confirmation code:</p>
+                  <p className="font-mono text-lg font-semibold">{confirmationCode}</p>
+                </div>
+              )}
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    if (confirmationCode) {
+                      router.push(`/pending/${confirmationCode}`)
+                    }
+                  }} 
+                  className="booking-highlight rounded-xl"
+                  disabled={!confirmationCode}
+                >
+                  Check Status
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={onClose} 
+                  className="rounded-xl"
+                >
+                  Close
+                </Button>
+              </div>
             </div>
           </div>
         )}
