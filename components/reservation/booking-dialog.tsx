@@ -35,6 +35,7 @@ interface BookingDialogProps {
 export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: BookingDialogProps) {
   const [step, setStep] = useState<"form" | "processing" | "confirmed">("form")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [confirmationCode, setConfirmationCode] = useState<string | null>(null)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -72,6 +73,8 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
         }),
       )
 
+      // Set confirmation code for display
+      setConfirmationCode(reservation.confirmation_code)
       setStep("confirmed")
       setIsSubmitting(false)
 
@@ -103,6 +106,23 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
     }
   }
 
+  const resetDialog = () => {
+    setStep("form")
+    setIsSubmitting(false)
+    setConfirmationCode(null)
+    setFormData({
+      name: "Ali Ahmed",
+      phone: "+92-300-1234567",
+      email: "ali@example.com",
+      notes: "",
+    })
+  }
+
+  const handleClose = () => {
+    resetDialog()
+    onClose()
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -113,7 +133,7 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-[500px] rounded-xl p-0 overflow-hidden">
         {step === "form" && (
           <>
@@ -268,7 +288,7 @@ export function BookingDialog({ restaurant, selectedSlot, isOpen, onClose }: Boo
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={onClose} 
+                  onClick={handleClose} 
                   className="rounded-xl"
                 >
                   Close
