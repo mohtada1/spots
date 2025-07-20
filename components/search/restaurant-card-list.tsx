@@ -55,7 +55,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
       {restaurants.map((restaurant) => (
         <Card
           key={restaurant.id}
-          className="rounded-xl overflow-hidden transition-shadow hover:shadow-lg group border-0 shadow-md"
+          className="rounded-food-small overflow-hidden transition-shadow duration-200 hover:shadow-md group border-0 shadow-sm bg-food-background"
         >
           <div className="flex flex-col md:flex-row">
             <div className="relative h-48 md:h-32 md:w-48 overflow-hidden bg-gray-100">
@@ -74,18 +74,18 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
               )}
             </div>
 
-            <CardContent className="flex-1 p-4 md:p-6">
+            <CardContent className="flex-1 p-food-md md:p-food-lg">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div className="flex-1">
                   <Link href={`/restaurant/${restaurant.id}`}>
-                    <h3 className="text-xl font-medium font-poppins mb-2 group-hover:text-primary transition-colors cursor-pointer">
+                    <h3 className="text-xl font-medium font-poppins mb-food-sm group-hover:text-food-primary transition-colors duration-200 cursor-pointer text-food-text">
                       {restaurant.name}
                     </h3>
                   </Link>
 
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-2">
+                  <div className="flex items-center space-x-4 text-sm text-gray-600 mb-food-sm">
                     <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-food-primary text-food-primary" />
                       <span>{restaurant.rating}</span>
                     </div>
                     <span>{restaurant.price_level}</span>
@@ -95,21 +95,21 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
                     </div>
                   </div>
 
-                  <p className="text-muted-foreground text-sm mb-2">{restaurant.cuisine.join(", ")}</p>
+                  <p className="text-gray-600 text-sm mb-food-sm">{restaurant.cuisine.join(", ")}</p>
 
                   {restaurant.description && (
-                    <p className="text-muted-foreground text-sm mb-3">{restaurant.description}</p>
+                    <p className="text-gray-600 text-sm mb-food-md">{restaurant.description}</p>
                   )}
 
-                  <div className="flex items-center space-x-1 text-sm text-primary">
+                  <div className="flex items-center space-x-1 text-sm text-food-primary">
                     <Clock className="h-4 w-4" />
                     <span>Available today</span>
                   </div>
                 </div>
 
-                <div className="mt-4 md:mt-0 md:ml-6">
+                <div className="mt-food-md md:mt-0 md:ml-food-lg">
                   <Link href={`/restaurant/${restaurant.id}`}>
-                    <Button className="booking-highlight rounded-xl w-full md:w-auto">View & Reserve</Button>
+                    <Button className="w-full md:w-auto">View & Reserve</Button>
                   </Link>
                 </div>
               </div>

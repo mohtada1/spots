@@ -24,6 +24,12 @@ const config: Config = {
         poppins: ["Poppins", "sans-serif"],
       },
       colors: {
+        // Food Platform Design System
+        'food-primary': '#da3743',
+        'food-background': '#ffffff',
+        'food-text': '#333333',
+        'food-gray-light': '#f5f5f5',
+        // Existing Radix UI colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -62,6 +68,19 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 0.25rem)",
         sm: "calc(var(--radius) - 0.5rem)",
+        // Design System Border Radius
+        'food-small': '4px',
+        'food-medium': '8px',
+        'food-large': '12px',
+      },
+      // Design System Spacing (8px base scale)
+      spacing: {
+        'food-xs': '4px',
+        'food-sm': '8px',
+        'food-md': '16px',
+        'food-lg': '24px',
+        'food-xl': '32px',
+        'food-2xl': '48px',
       },
       keyframes: {
         "accordion-down": {

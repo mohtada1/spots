@@ -144,10 +144,10 @@ export function RestaurantManager({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-food-lg">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Restaurant Management</h2>
-        <Button onClick={startCreate} className="booking-highlight rounded-xl">
+        <h2 className="text-2xl font-bold text-food-text">Restaurant Management</h2>
+        <Button onClick={startCreate}>
           <Plus className="h-4 w-4 mr-2" />
           Add Restaurant
         </Button>
@@ -155,11 +155,11 @@ export function RestaurantManager({
 
       {/* Create Form */}
       {isCreating && (
-        <Card className="rounded-xl border-0 shadow-md">
+        <Card className="rounded-food-small border-0 shadow-sm bg-food-background">
           <CardHeader>
-            <CardTitle>Create New Restaurant</CardTitle>
+            <CardTitle className="text-food-text">Create New Restaurant</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-food-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name">Restaurant Name *</Label>
@@ -167,7 +167,6 @@ export function RestaurantManager({
                   id="name"
                   value={formData.name || ""}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="rounded-xl"
                 />
               </div>
               <div>
@@ -176,7 +175,7 @@ export function RestaurantManager({
                   value={formData.city || ""}
                   onValueChange={(value) => setFormData({ ...formData, city: value })}
                 >
-                  <SelectTrigger className="rounded-xl">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select city" />
                   </SelectTrigger>
                   <SelectContent>
@@ -215,7 +214,7 @@ export function RestaurantManager({
                   value={formData.price_level || ""}
                   onValueChange={(value) => setFormData({ ...formData, price_level: value })}
                 >
-                  <SelectTrigger className="rounded-xl">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -237,7 +236,6 @@ export function RestaurantManager({
                   step="0.1"
                   value={formData.rating || ""}
                   onChange={(e) => setFormData({ ...formData, rating: Number.parseFloat(e.target.value) || 0 })}
-                  className="rounded-xl"
                 />
               </div>
               <div className="flex items-center space-x-2 pt-6">
@@ -257,7 +255,6 @@ export function RestaurantManager({
                   id="address"
                   value={formData.address || ""}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="rounded-xl"
                 />
               </div>
               <div>
@@ -266,7 +263,6 @@ export function RestaurantManager({
                   id="phone"
                   value={formData.phone || ""}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="rounded-xl"
                 />
               </div>
             </div>
@@ -277,7 +273,6 @@ export function RestaurantManager({
                 id="description"
                 value={formData.description || ""}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="rounded-xl"
                 rows={3}
               />
             </div>
@@ -294,11 +289,11 @@ export function RestaurantManager({
             </div>
 
             <div className="flex space-x-2">
-              <Button onClick={handleSave} className="booking-highlight rounded-xl">
+              <Button onClick={handleSave}>
                 <Save className="h-4 w-4 mr-2" />
                 Create Restaurant
               </Button>
-              <Button onClick={cancelEdit} variant="outline" className="rounded-xl">
+              <Button onClick={cancelEdit} variant="outline">
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
@@ -310,7 +305,7 @@ export function RestaurantManager({
       {/* Restaurant List */}
       <div className="grid grid-cols-1 gap-6">
         {restaurants.map((restaurant) => (
-          <Card key={restaurant.id} className="rounded-xl border-0 shadow-md">
+          <Card key={restaurant.id} className="rounded-food-small border-0 shadow-sm bg-food-background">
             {editingId === restaurant.id ? (
               // Edit Form
               <CardContent className="p-6 space-y-6">

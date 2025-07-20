@@ -34,24 +34,24 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
   }
 
   return (
-    <div className="bg-foreground text-background py-16 md:py-24">
-      <div className="container mx-auto px-4 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold font-poppins mb-4">Book Your Perfect Table</h1>
-        <p className="text-lg md:text-xl mb-8 opacity-90">
+    <div className="bg-food-primary text-white py-food-2xl md:py-24">
+      <div className="container mx-auto px-food-md text-center">
+        <h1 className="text-3xl md:text-5xl font-bold font-poppins mb-food-md text-white">Book Your Perfect Table</h1>
+        <p className="text-lg md:text-xl mb-food-xl opacity-90">
           Discover and reserve tables at Pakistan's best restaurants in seconds
         </p>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-background rounded-xl shadow-lg p-4 md:p-6">
-            <div className="flex flex-col md:flex-row gap-4">
+          <div className="bg-food-background rounded-food-medium shadow-lg p-food-md md:p-food-lg">
+            <div className="flex flex-col md:flex-row gap-food-md">
               {/* City Selector */}
               <div className="flex-1">
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
-                  <SelectTrigger className="rounded-xl border-input">
-                    <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <SelectTrigger className="rounded-food-small border-input">
+                    <MapPin className="h-4 w-4 mr-2 text-gray-600" />
                     <SelectValue placeholder="Select City" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-food-small">
                     <SelectItem value="karachi">Karachi</SelectItem>
                     <SelectItem value="lahore">Lahore</SelectItem>
                     <SelectItem value="islamabad">Islamabad</SelectItem>
@@ -63,20 +63,20 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
               {/* Search Input */}
               <div className="flex-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
                   <Input
                     type="text"
                     placeholder="Search restaurants, cuisine, or location..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="pl-10 rounded-xl"
+                    className="pl-10 rounded-food-small"
                   />
                 </div>
               </div>
 
               {/* Search Button */}
-              <Button onClick={handleSearch} className="booking-highlight rounded-xl px-8 py-3 text-lg">
+              <Button onClick={handleSearch} className="px-8 py-3 text-lg">
                 Search
               </Button>
             </div>

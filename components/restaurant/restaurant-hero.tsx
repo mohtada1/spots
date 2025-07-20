@@ -16,7 +16,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="relative h-64 md:h-96 rounded-xl overflow-hidden bg-gray-100">
+          <div className="relative h-64 md:h-96 rounded-food-small overflow-hidden bg-gray-100">
             <Image
               src={restaurant.image_url || '/placeholder.svg?height=600&width=800'}
               alt={restaurant.name}
@@ -36,25 +36,25 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
           </div>
 
           {/* Restaurant Info */}
-          <div className="space-y-6">
+          <div className="space-y-food-lg">
             <div>
-              <div className="flex items-start justify-between mb-4">
-                <h1 className="text-3xl md:text-4xl font-bold font-poppins">{restaurant.name}</h1>
+              <div className="flex items-start justify-between mb-food-md">
+                <h1 className="text-3xl md:text-4xl font-bold font-poppins text-food-text">{restaurant.name}</h1>
                 <Button variant="outline" size="icon" className="rounded-full">
                   <Heart className="h-4 w-4" />
                 </Button>
               </div>
 
-              <div className="flex items-center space-x-4 text-muted-foreground mb-4">
+              <div className="flex items-center space-x-4 text-gray-600 mb-food-md">
                 <div className="flex items-center space-x-1">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-5 w-5 fill-food-primary text-food-primary" />
                   <span className="font-medium">{restaurant.rating}</span>
                   <span className="text-sm">(124 reviews)</span>
                 </div>
                 <span className="text-lg font-medium">{restaurant.price_level}</span>
               </div>
 
-              <div className="space-y-2 text-muted-foreground">
+              <div className="space-y-food-sm text-gray-600">
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4" />
                   <span>{restaurant.address || `${restaurant.city}, Pakistan`}</span>
@@ -71,7 +71,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-2">Cuisine</h3>
+              <h3 className="text-lg font-semibold mb-food-sm text-food-text">Cuisine</h3>
               <div className="flex flex-wrap gap-2">
                 {restaurant.cuisine.map((cuisine) => (
                   <Badge key={cuisine} variant="outline" className="rounded-full">
@@ -83,8 +83,8 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
 
             {restaurant.description && (
               <div>
-                <h3 className="text-lg font-semibold mb-2">About</h3>
-                <p className="text-muted-foreground">{restaurant.description}</p>
+                <h3 className="text-lg font-semibold mb-food-sm text-food-text">About</h3>
+                <p className="text-gray-600 leading-relaxed">{restaurant.description}</p>
               </div>
             )}
           </div>

@@ -62,7 +62,7 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
           {visibleRestaurants.map((restaurant) => (
             <Card
               key={restaurant.id}
-              className="rounded-xl overflow-hidden transition-shadow hover:shadow-lg group cursor-pointer border-0 shadow-md"
+              className="rounded-food-small overflow-hidden transition-shadow duration-200 hover:shadow-md group cursor-pointer border-0 shadow-sm bg-food-background"
             >
               <Link href={`/restaurant/${restaurant.id}`}>
                 <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -80,13 +80,13 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
                     <Badge className="absolute top-3 right-3 bg-foreground text-background rounded-full">Halal</Badge>
                   )}
                 </div>
-                <CardContent className="p-5">
-                  <h3 className="text-xl font-medium font-poppins mb-2 group-hover:text-primary transition-colors">
+                <CardContent className="p-food-md">
+                  <h3 className="text-xl font-medium font-poppins mb-food-sm group-hover:text-food-primary transition-colors duration-200 text-food-text">
                     {restaurant.name}
                   </h3>
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-2">
+                  <div className="flex items-center space-x-4 text-sm text-gray-600 mb-food-sm">
                     <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-food-primary text-food-primary" />
                       <span>{restaurant.rating}</span>
                     </div>
                     <span>{restaurant.price_level}</span>
@@ -95,8 +95,8 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
                       <span>{restaurant.city}</span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground text-sm mb-4">{restaurant.cuisine.join(", ")}</p>
-                  <Button className="booking-highlight rounded-xl w-full">View & Reserve</Button>
+                  <p className="text-gray-600 text-sm mb-food-md">{restaurant.cuisine.join(", ")}</p>
+                  <Button className="w-full">View & Reserve</Button>
                 </CardContent>
               </Link>
             </Card>

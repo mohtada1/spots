@@ -1,0 +1,235 @@
+{
+    "designSystem": {
+      "name": "Food Platform Design System",
+      "version": "1.0.0",
+      "description": "Design system profile extracted from food delivery and restaurant discovery platforms",
+      
+      "colorPalette": {
+        "primary": "#da3743",
+        "background": "#ffffff",
+        "text": "#333333",
+        "usage": {
+          "primary": "CTAs, accent elements, navigation highlights",
+          "background": "Main backgrounds, cards, containers",
+          "text": "Primary text, headings, body content"
+        }
+      },
+  
+      "typography": {
+        "hierarchy": {
+          "h1": {
+            "weight": "bold",
+            "size": "large",
+            "usage": "Page titles, main headings"
+          },
+          "h2": {
+            "weight": "semibold", 
+            "size": "medium-large",
+            "usage": "Section headers, category titles"
+          },
+          "h3": {
+            "weight": "medium",
+            "size": "medium",
+            "usage": "Card titles, restaurant names"
+          },
+          "body": {
+            "weight": "normal",
+            "size": "small-medium",
+            "usage": "Descriptions, metadata, general content"
+          },
+          "caption": {
+            "weight": "normal",
+            "size": "small",
+            "usage": "Ratings, timestamps, secondary info"
+          }
+        }
+      },
+  
+      "layout": {
+        "structure": {
+          "header": {
+            "height": "fixed",
+            "background": "white",
+            "elements": ["logo", "navigation", "search", "auth-buttons"],
+            "alignment": "space-between"
+          },
+          "navigation": {
+            "type": "horizontal-tabs",
+            "style": "clean-minimal",
+            "activeState": "underline-highlight"
+          },
+          "breadcrumbs": {
+            "style": "chevron-separated",
+            "position": "below-header",
+            "alignment": "left"
+          },
+          "mainContent": {
+            "maxWidth": "container",
+            "padding": "responsive",
+            "sections": ["hero", "categories", "listings"]
+          }
+        }
+      },
+  
+      "components": {
+        "cards": {
+          "restaurant": {
+            "structure": "image-content-actions",
+            "imageAspect": "4:3",
+            "padding": "medium",
+            "shadow": "subtle",
+            "borderRadius": "small",
+            "hoverState": "lift-shadow"
+          },
+          "category": {
+            "structure": "icon-text",
+            "layout": "grid-responsive",
+            "iconStyle": "illustrated-emoji",
+            "background": "light-gray",
+            "borderRadius": "medium"
+          }
+        },
+  
+        "buttons": {
+          "primary": {
+            "background": "#da3743",
+            "color": "#ffffff",
+            "borderRadius": "small",
+            "padding": "medium",
+            "fontWeight": "semibold"
+          },
+          "secondary": {
+            "background": "transparent",
+            "color": "#333333",
+            "border": "1px solid #333333",
+            "borderRadius": "small"
+          },
+          "ghost": {
+            "background": "transparent",
+            "color": "#da3743",
+            "border": "none"
+          }
+        },
+  
+        "search": {
+          "style": "contained-input",
+          "placeholder": "descriptive-text",
+          "iconPosition": "left",
+          "borderRadius": "small",
+          "focusState": "border-highlight"
+        },
+  
+        "filters": {
+          "layout": "sidebar-left",
+          "categories": ["price", "suggestions", "category", "features"],
+          "style": "checkbox-lists",
+          "collapsible": true
+        },
+  
+        "ratings": {
+          "display": "stars-numerical",
+          "starStyle": "filled-solid",
+          "reviewCount": "parenthetical",
+          "color": "#da3743"
+        }
+      },
+  
+      "patterns": {
+        "categoryGrid": {
+          "columns": "responsive-auto-fit",
+          "minWidth": "200px",
+          "gap": "medium",
+          "navigation": "horizontal-scroll-mobile"
+        },
+  
+        "restaurantListings": {
+          "layout": "card-grid",
+          "itemsPerRow": "responsive-3-2-1",
+          "spacing": "consistent-medium",
+          "loadingState": "skeleton-cards"
+        },
+  
+        "heroSection": {
+          "background": "image-overlay",
+          "contentAlignment": "center",
+          "elements": ["title", "search-bar", "cta-button"],
+          "overlay": "dark-transparent"
+        },
+  
+        "sponsoredContent": {
+          "indicator": "subtle-badge",
+          "styling": "consistent-with-organic",
+          "placement": "inline-with-results"
+        }
+      },
+  
+      "interactions": {
+        "hover": {
+          "cards": "subtle-lift-shadow",
+          "buttons": "color-darken",
+          "links": "color-change"
+        },
+        "loading": {
+          "style": "skeleton-placeholders",
+          "animation": "shimmer-subtle"
+        },
+        "transitions": {
+          "duration": "fast-200ms",
+          "easing": "ease-out"
+        }
+      },
+  
+      "spacing": {
+        "scale": "8px-base",
+        "sizes": {
+          "xs": "4px",
+          "sm": "8px", 
+          "md": "16px",
+          "lg": "24px",
+          "xl": "32px",
+          "2xl": "48px"
+        }
+      },
+  
+      "breakpoints": {
+        "mobile": "320px-768px",
+        "tablet": "768px-1024px", 
+        "desktop": "1024px+"
+      },
+  
+      "designPrinciples": {
+        "visual": [
+          "Clean, minimal interface with strategic use of white space",
+          "Food imagery as primary visual element",
+          "Consistent card-based layouts",
+          "Red accent color for CTAs and important elements"
+        ],
+        "functional": [
+          "Search and filter as primary navigation paradigm",
+          "Category-based browsing with visual icons",
+          "Clear information hierarchy with ratings and metadata",
+          "Mobile-first responsive design"
+        ],
+        "content": [
+          "High-quality food photography",
+          "Clear restaurant/business names and descriptions",
+          "Prominent rating and review systems",
+          "Location and timing information clearly displayed"
+        ]
+      },
+  
+      "componentLibrary": {
+        "required": [
+          "Header with navigation and search",
+          "Category grid with icons",
+          "Restaurant/business cards",
+          "Filter sidebar",
+          "Star rating component",
+          "Search results layout",
+          "Breadcrumb navigation",
+          "CTA buttons (primary/secondary)",
+          "Loading states and skeletons"
+        ]
+      }
+    }
+  }

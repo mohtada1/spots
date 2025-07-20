@@ -11,20 +11,20 @@ export function Header() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <header className="bg-background border-b sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+    <header className="bg-food-background border-b sticky top-0 z-50">
+      <div className="container mx-auto px-food-md">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-foreground rounded-full flex items-center justify-center">
-              <span className="text-background font-bold text-lg">S</span>
+            <div className="w-8 h-8 bg-food-primary rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className="text-2xl font-poppins font-bold">Spots</span>
+            <span className="text-2xl font-poppins font-bold text-food-text">Spots</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/search" className="text-foreground/80 hover:text-foreground transition-colors">
+            <Link href="/search" className="text-food-text/80 hover:text-food-primary transition-colors duration-200">
               Restaurants
             </Link>
           </nav>
