@@ -3,15 +3,13 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import { Menu, X } from "lucide-react"
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
 
   return (
-    <header className="bg-food-background border-b sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-food-md">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -19,28 +17,21 @@ export function Header() {
             <div className="w-8 h-8 bg-food-primary rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className="text-2xl font-poppins font-bold text-food-text">Spots</span>
+            <span className="text-2xl font-poppins font-bold text-gray-800">Spots</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/search" className="text-food-text/80 hover:text-food-primary transition-colors duration-200">
+            <Link href="/" className="relative text-gray-700 hover:text-food-primary transition-colors duration-200 py-2 border-b-2 border-food-primary">
+              Home
+            </Link>
+            <Link href="/search" className="relative text-gray-700 hover:text-food-primary transition-colors duration-200 py-2 border-b-2 border-transparent hover:border-food-primary">
               Restaurants
             </Link>
           </nav>
 
           {/* Right side actions */}
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full"
-            >
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
+          <div className="flex items-center space-x-4">
 
             {/* Mobile Menu Button */}
             <Button
@@ -56,11 +47,18 @@ export function Header() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="md:hidden py-4 border-t border-gray-200 bg-white">
             <nav className="flex flex-col space-y-4">
               <Link
+                href="/"
+                className="text-gray-700 hover:text-food-primary transition-colors px-4 py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
                 href="/search"
-                className="text-foreground/80 hover:text-foreground transition-colors"
+                className="text-gray-700 hover:text-food-primary transition-colors px-4 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Restaurants

@@ -34,16 +34,30 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
   }
 
   return (
-    <div className="bg-food-primary text-white py-food-2xl md:py-24">
-      <div className="container mx-auto px-food-md text-center">
-        <h1 className="text-3xl md:text-5xl font-bold font-poppins mb-food-md text-white">Book Your Perfect Table</h1>
-        <p className="text-lg md:text-xl mb-food-xl opacity-90">
-          Discover and reserve tables at Pakistan's best restaurants in seconds
+    <div 
+      className="relative min-h-[50vh] flex items-center justify-center text-white"
+      style={{
+        backgroundImage: 'url(https://l8z7egtqhmfautov.public.blob.vercel-storage.com/hero)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/40"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-food-md text-center">
+        <h1 className="text-4xl md:text-6xl font-bold font-poppins mb-food-lg text-white">
+          Discover Amazing Food
+        </h1>
+        <p className="text-xl md:text-2xl mb-food-2xl text-white/90 max-w-2xl mx-auto">
+          Find and book tables at the best restaurants in Pakistan
         </p>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-food-background rounded-food-medium shadow-lg p-food-md md:p-food-lg">
-            <div className="flex flex-col md:flex-row gap-food-md">
+          <div className="bg-white rounded-food-medium shadow-xl p-food-lg md:p-food-xl">
+            <div className="flex flex-col md:flex-row gap-food-md items-end">
               {/* City Selector */}
               <div className="flex-1">
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
@@ -76,7 +90,11 @@ export function HeroSearchBar({ onSearch }: HeroSearchBarProps) {
               </div>
 
               {/* Search Button */}
-              <Button onClick={handleSearch} className="px-8 py-3 text-lg">
+              <Button 
+                onClick={handleSearch} 
+                className="px-food-xl py-food-md text-lg font-semibold bg-food-primary hover:bg-food-primary/90 text-white min-w-[120px] h-12"
+              >
+                <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>
             </div>
