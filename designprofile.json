@@ -1,0 +1,220 @@
+{
+    "designSystemProfile": {
+      "metadata": {
+        "name": "Design System Profile",
+        "version": "1.0.0",
+        "description": "Visual design extraction profile for consistent AI replication",
+        "extractedFrom": "screenshot_analysis",
+        "createdAt": "2025-08-03"
+      },
+      
+      "colorPalette": {
+        "primary": {
+          "main": "#color_hex",
+          "light": "#color_hex", 
+          "dark": "#color_hex",
+          "contrast": "#color_hex"
+        },
+        "secondary": {
+          "main": "#color_hex",
+          "light": "#color_hex",
+          "dark": "#color_hex"
+        },
+        "neutral": {
+          "background": "#color_hex",
+          "surface": "#color_hex",
+          "border": "#color_hex",
+          "text": {
+            "primary": "#color_hex",
+            "secondary": "#color_hex",
+            "disabled": "#color_hex"
+          }
+        },
+        "semantic": {
+          "success": "#color_hex",
+          "warning": "#color_hex",
+          "error": "#color_hex",
+          "info": "#color_hex"
+        }
+      },
+  
+      "typography": {
+        "fontFamilies": {
+          "primary": "font_name, fallback",
+          "monospace": "font_name, fallback",
+          "display": "font_name, fallback"
+        },
+        "fontSizes": {
+          "xs": "12px",
+          "sm": "14px",
+          "base": "16px",
+          "lg": "18px",
+          "xl": "20px",
+          "2xl": "24px",
+          "3xl": "30px",
+          "4xl": "36px"
+        },
+        "fontWeights": {
+          "light": 300,
+          "normal": 400,
+          "medium": 500,
+          "semibold": 600,
+          "bold": 700
+        },
+        "lineHeights": {
+          "tight": 1.2,
+          "normal": 1.5,
+          "relaxed": 1.75
+        }
+      },
+  
+      "spacing": {
+        "scale": "geometric_or_linear",
+        "base": "4px",
+        "values": {
+          "xs": "4px",
+          "sm": "8px",
+          "md": "16px",
+          "lg": "24px",
+          "xl": "32px",
+          "2xl": "48px",
+          "3xl": "64px"
+        }
+      },
+  
+      "layout": {
+        "maxWidth": "1200px",
+        "containerPadding": "16px",
+        "gridSystem": {
+          "columns": 12,
+          "gutter": "24px",
+          "breakpoints": {
+            "mobile": "768px",
+            "tablet": "1024px",
+            "desktop": "1200px"
+          }
+        }
+      },
+  
+      "components": {
+        "buttons": {
+          "borderRadius": "value",
+          "padding": {
+            "small": "8px 16px",
+            "medium": "12px 24px",
+            "large": "16px 32px"
+          },
+          "variants": {
+            "primary": {
+              "background": "primary_color",
+              "color": "white",
+              "border": "none",
+              "hover": {
+                "background": "primary_dark",
+                "transform": "translateY(-1px)"
+              }
+            },
+            "secondary": {
+              "background": "transparent",
+              "color": "primary_color",
+              "border": "1px solid primary_color"
+            },
+            "ghost": {
+              "background": "transparent",
+              "color": "text_primary",
+              "border": "none"
+            }
+          }
+        },
+  
+        "cards": {
+          "borderRadius": "value",
+          "padding": "value",
+          "shadow": "shadow_value",
+          "border": "border_style",
+          "background": "surface_color"
+        },
+  
+        "forms": {
+          "inputs": {
+            "borderRadius": "value",
+            "padding": "value",
+            "border": "border_style",
+            "focusState": {
+              "borderColor": "primary_color",
+              "shadow": "focus_shadow"
+            }
+          },
+          "labels": {
+            "fontSize": "sm",
+            "fontWeight": "medium",
+            "marginBottom": "4px"
+          }
+        },
+  
+        "navigation": {
+          "height": "value",
+          "background": "nav_background",
+          "padding": "value",
+          "shadow": "nav_shadow"
+        }
+      },
+  
+      "designPrinciples": {
+        "visualHierarchy": {
+          "headingScale": "major_third_or_other",
+          "contrastRatio": "4.5:1_minimum",
+          "whitespaceUsage": "generous_or_compact"
+        },
+        "interactionPatterns": {
+          "hoverEffects": "subtle_transform_and_color",
+          "transitions": "200ms_ease_in_out",
+          "focusStates": "visible_outline_or_shadow"
+        },
+        "responsiveStrategy": "mobile_first_or_desktop_first"
+      },
+  
+      "brandCharacteristics": {
+        "personality": ["modern", "minimal", "professional", "playful"],
+        "visualStyle": "clean_geometric_organic_etc",
+        "iconStyle": "outline_filled_mixed",
+        "imageStyle": "photography_illustration_mixed"
+      },
+  
+      "patterns": {
+        "commonLayouts": [
+          {
+            "name": "hero_section",
+            "structure": "centered_text_with_cta_button",
+            "spacing": "large_vertical_margins"
+          },
+          {
+            "name": "feature_grid",
+            "structure": "3_column_responsive_grid",
+            "spacing": "consistent_gaps"
+          }
+        ],
+        "contentFlow": "left_to_right_top_to_bottom",
+        "visualRhythm": "consistent_spacing_intervals"
+      },
+  
+      "accessibility": {
+        "colorContrast": "wcag_aa_compliant",
+        "focusManagement": "keyboard_navigation_support",
+        "textSize": "minimum_16px_body_text",
+        "altText": "descriptive_image_descriptions"
+      },
+  
+      "implementationNotes": {
+        "cssFramework": "tailwind_bootstrap_custom",
+        "componentLibrary": "headlessui_radix_custom",
+        "stateManagement": "context_redux_zustand",
+        "buildConsiderations": [
+          "Maintain consistent spacing ratios",
+          "Use semantic color naming",
+          "Implement responsive breakpoints",
+          "Ensure accessibility compliance"
+        ]
+      }
+    }
+  }
