@@ -35,7 +35,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light">
           <AdminAuthProvider>
             <Header />
-            <main className="min-h-screen bg-background">{children}</main>
+            <main className="min-h-screen">{children}</main>
             <Toaster />
           </AdminAuthProvider>
         </ThemeProvider>

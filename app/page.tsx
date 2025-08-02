@@ -297,98 +297,88 @@ export default function HomePage() {
   const cuisineFilters = ["All Restaurants", "Italian", "Japanese", "French", "American", "Mexican", "Seafood", "Mediterranean", "Chinese", "Korean", "Indian"]
 
   return (
+    <>
+      {/* Hide scrollbars for horizontal scrolling */}
+      <style jsx>{`
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-red-500">Spots</h1>
-        <Button variant="outline" className="text-red-500 border-red-500 hover:bg-red-50">
-          Sign In
-        </Button>
-      </header>
-
-      {/* Hero Section with Background Image */}
-      <div className="relative h-64 bg-cover bg-center" style={{
+      {/* Hero Section with Background Image - Extends behind header */}
+      <div className="relative h-[100vh] bg-cover bg-center" style={{
         backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
       }}>
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
+        <div className="absolute inset-0 bg-black bg-opacity-50" />
         
-        {/* Hero Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
-          <h2 className="text-3xl font-bold mb-2 text-center">Find your next table</h2>
-          <p className="text-lg mb-8 text-center opacity-90">Book restaurants in your city</p>
+        {/* Hero Content - Add top padding to account for header */}
+        <div className="relative z-10 flex flex-col justify-center items-center h-full text-white px-4 text-center pt-20">
+          <div className="mt-8 mb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">Find Your Perfect Table</h2>
+            <p className="text-base sm:text-lg opacity-90 mb-6">Discover and book the best restaurants in your city</p>
+          </div>
           
-          {/* Search Form */}
-          <form onSubmit={handleSearch} className="w-full max-w-4xl">
-            <div className="bg-white rounded-lg p-4 shadow-lg">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                {/* Location */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      type="text"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="pl-10 border-gray-300"
-                      placeholder="San Francisco, CA"
-                    />
+          {/* Search Form - Inside Hero */}
+          <div className="bg-white rounded-2xl shadow-lg p-4 w-full max-w-sm mx-auto">
+            <form onSubmit={handleSearch} className="space-y-3">
+              {/* Date, Time, People Row */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
+                  <div className="text-gray-400">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                    </svg>
                   </div>
+                  <span className="text-xs font-medium text-gray-900">Aug 2</span>
                 </div>
                 
-                {/* Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                  <Input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="border-gray-300"
-                  />
-                </div>
-                
-                {/* Time */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                  <Input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="border-gray-300"
-                  />
-                </div>
-                
-                {/* Party Size */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Party Size</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      type="number"
-                      value={partySize}
-                      onChange={(e) => setPartySize(e.target.value)}
-                      className="pl-10 border-gray-300"
-                      placeholder="2"
-                      min="1"
-                      max="20"
-                    />
+                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
+                  <div className="text-gray-400">
+                    <Clock className="w-3 h-3" />
                   </div>
+                  <span className="text-xs font-medium text-gray-900">3:00 AM</span>
+                </div>
+                
+                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
+                  <div className="text-gray-400">
+                    <Users className="w-3 h-3" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-900">2 people</span>
                 </div>
               </div>
               
-              {/* Search Button */}
-              <Button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white py-3">
-                <Search className="w-4 h-4 mr-2" />
-                Find Tables
-              </Button>
-            </div>
-          </form>
+              {/* Location Input */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-gray-400" />
+                </div>
+                <Input
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="pl-10 pr-20 h-10 text-sm border-gray-200 rounded-lg"
+                  placeholder="San Francisco, CA"
+                />
+                <Button 
+                  type="submit" 
+                  className="absolute inset-y-0 right-0 px-4 bg-red-500 hover:bg-red-600 text-white text-sm rounded-r-lg"
+                >
+                  Let's go
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
       {/* Results Summary */}
-      <div className="px-4 py-4 border-b border-gray-200">
+      <div className="px-4 py-6 bg-white">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">
             Restaurants in San Francisco ({restaurants.length} found)
@@ -401,8 +391,8 @@ export default function HomePage() {
       </div>
 
       {/* Cuisine Filter Pills */}
-      <div className="px-4 py-4 border-b border-gray-100">
-        <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="px-4 py-4 border-b border-gray-100 bg-white">
+        <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
           {cuisineFilters.map((cuisine) => (
             <Button
               key={cuisine}
@@ -447,111 +437,122 @@ export default function HomePage() {
         ) : (
           <div className="space-y-8 mt-6">
             {/* Featured Section */}
-            <section className="px-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Featured</h2>
-                <span className="text-sm text-gray-600">Handpicked by our experts</span>
-              </div>
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {getRestaurantsByCategory("featured").map((restaurant) => (
-                  <RestaurantCard 
-                    key={restaurant.id} 
-                    restaurant={restaurant} 
-                    showBadge={true}
-                    badgeText="Featured"
-                    badgeColor="bg-red-500"
-                  />
-                ))}
+            <section className="px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                  <h2 className="text-xl font-bold text-gray-900">Featured</h2>
+                  <span className="text-sm text-gray-600">Handpicked by our experts</span>
+                </div>
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                  {getRestaurantsByCategory("featured").map((restaurant) => (
+                    <RestaurantCard 
+                      key={restaurant.id} 
+                      restaurant={restaurant} 
+                      showBadge={true}
+                      badgeText="Featured"
+                      badgeColor="bg-red-500"
+                    />
+                  ))}
+                </div>
               </div>
             </section>
 
             {/* Nearby & Available Section */}
-            <section className="px-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Nearby & Available</h2>
-                <span className="text-sm text-gray-600">Close to you with open tables</span>
-              </div>
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {getRestaurantsByCategory("nearby").map((restaurant) => (
-                  <RestaurantCard 
-                    key={restaurant.id} 
-                    restaurant={restaurant} 
-                    showBadge={true}
-                    badgeText="Available"
-                    badgeColor="bg-green-500"
-                  />
-                ))}
+            <section className="px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                  <h2 className="text-xl font-bold text-gray-900">Nearby & Available</h2>
+                  <span className="text-sm text-gray-600">Close to you with open tables</span>
+                </div>
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                  {getRestaurantsByCategory("nearby").map((restaurant) => (
+                    <RestaurantCard 
+                      key={restaurant.id} 
+                      restaurant={restaurant} 
+                      showBadge={true}
+                      badgeText="Available"
+                      badgeColor="bg-green-500"
+                    />
+                  ))}
+                </div>
               </div>
             </section>
 
             {/* Top Rated Section */}
-            <section className="px-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Top Rated</h2>
-                <span className="text-sm text-gray-600">Highest rated restaurants</span>
-              </div>
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {getRestaurantsByCategory("topRated").map((restaurant) => (
-                  <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                ))}
+            <section className="px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                  <h2 className="text-xl font-bold text-gray-900">Top Rated</h2>
+                  <span className="text-sm text-gray-600">Highest rated restaurants</span>
+                </div>
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                  {getRestaurantsByCategory("topRated").map((restaurant) => (
+                    <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                  ))}
+                </div>
               </div>
             </section>
 
             {/* Book Now Section */}
-            <section className="px-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Book Now</h2>
-                <span className="text-sm text-gray-600">Limited availability - reserve quickly</span>
-              </div>
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {getRestaurantsByCategory("bookNow").map((restaurant) => (
-                  <RestaurantCard 
-                    key={restaurant.id} 
-                    restaurant={restaurant} 
-                    showBadge={true}
-                    badgeText="Featured"
-                    badgeColor="bg-red-500"
-                  />
-                ))}
+            <section className="px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                  <h2 className="text-xl font-bold text-gray-900">Book Now</h2>
+                  <span className="text-sm text-gray-600">Limited availability - reserve quickly</span>
+                </div>
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                  {getRestaurantsByCategory("bookNow").map((restaurant) => (
+                    <RestaurantCard 
+                      key={restaurant.id} 
+                      restaurant={restaurant} 
+                      showBadge={true}
+                      badgeText="Featured"
+                      badgeColor="bg-red-500"
+                    />
+                  ))}
+                </div>
               </div>
             </section>
 
             {/* All Restaurants Grid Section */}
-            <section className="px-4 mt-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">All Restaurants</h2>
-                <p className="text-gray-600">
-                  {getFilteredRestaurants().length} restaurants {selectedCuisine !== "All Restaurants" ? `serving ${selectedCuisine} cuisine` : "available"}
-                </p>
-              </div>
-              
-              {/* Restaurant Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {getFilteredRestaurants().map((restaurant) => (
-                  <RestaurantGridCard key={restaurant.id} restaurant={restaurant} />
-                ))}
-              </div>
-              
-              {/* Empty State for Filtered Results */}
-              {getFilteredRestaurants().length === 0 && (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">🔍</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No restaurants found</h3>
-                  <p className="text-gray-600 mb-4">
-                    No restaurants serving {selectedCuisine} cuisine were found.
+            <section className="mt-8">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">All Restaurants</h2>
+                  <p className="text-gray-600">
+                    {getFilteredRestaurants().length} restaurants {selectedCuisine !== "All Restaurants" ? `serving ${selectedCuisine} cuisine` : "available"}
                   </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setSelectedCuisine("All Restaurants")}
-                  >
-                    Show all restaurants
-                  </Button>
                 </div>
-              )}
+                
+                {/* Restaurant Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  {getFilteredRestaurants().map((restaurant) => (
+                    <RestaurantGridCard key={restaurant.id} restaurant={restaurant} />
+                  ))}
+                </div>
+                
+                {/* Empty State for Filtered Results */}
+                {getFilteredRestaurants().length === 0 && (
+                  <div className="text-center py-12">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No restaurants found</h3>
+                    <p className="text-gray-600 mb-4">
+                      No restaurants serving {selectedCuisine} cuisine were found.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSelectedCuisine("All Restaurants")}
+                    >
+                      Show all restaurants
+                    </Button>
+                  </div>
+                )}
+              </div>
             </section>
           </div>
         )}
       </div>
     </div>
+    </>
   )
 }
