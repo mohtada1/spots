@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, MapPin, Star, Clock, Users, Filter } from "lucide-react"
+import { Search, MapPin, Star, Filter } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -15,10 +15,6 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCuisine, setSelectedCuisine] = useState("All Restaurants")
-  const [location, setLocation] = useState("San Francisco, CA")
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
-  const [partySize, setPartySize] = useState("")
   const router = useRouter()
 
   useEffect(() => {
@@ -38,7 +34,10 @@ export default function HomePage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Searching with:", { location, date, time, partySize })
+    if (searchQuery.trim()) {
+      // Navigate to search page with query parameter
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    }
   }
 
   // Navigate to restaurant detail page
@@ -309,7 +308,7 @@ export default function HomePage() {
         }
       `}</style>
       
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white -mt-16">
       {/* Hero Section with Background Image - Extends behind header */}
       <div className="relative h-[100vh] bg-cover bg-center" style={{
         backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
@@ -324,52 +323,25 @@ export default function HomePage() {
             <p className="text-base sm:text-lg opacity-90 mb-6">Discover and book the best restaurants in your city</p>
           </div>
           
-          {/* Search Form - Inside Hero */}
-          <div className="bg-white rounded-2xl shadow-lg p-4 w-full max-w-sm mx-auto">
-            <form onSubmit={handleSearch} className="space-y-3">
-              {/* Date, Time, People Row */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
-                  <div className="text-gray-400">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span className="text-xs font-medium text-gray-900">Aug 2</span>
-                </div>
-                
-                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
-                  <div className="text-gray-400">
-                    <Clock className="w-3 h-3" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-900">3:00 AM</span>
-                </div>
-                
-                <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-2">
-                  <div className="text-gray-400">
-                    <Users className="w-3 h-3" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-900">2 people</span>
-                </div>
-              </div>
-              
-              {/* Location Input */}
+          {/* Search Form - Simplified */}
+          <div className="bg-white rounded-2xl shadow-lg p-4 w-full max-w-md mx-auto">
+            <form onSubmit={handleSearch}>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
                 </div>
                 <Input
                   type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="pl-10 pr-20 h-10 text-sm border-gray-200 rounded-lg"
-                  placeholder="San Francisco, CA"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 pr-24 h-12 text-base text-gray-900 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 placeholder:text-gray-500"
+                  placeholder="Search restaurants, cuisines, or dishes..."
                 />
                 <Button 
                   type="submit" 
-                  className="absolute inset-y-0 right-0 px-4 bg-red-500 hover:bg-red-600 text-white text-sm rounded-r-lg"
+                  className="absolute inset-y-0 right-0 px-6 bg-red-500 hover:bg-red-600 text-white font-medium rounded-r-xl transition-colors duration-200"
                 >
-                  Let's go
+                  Search
                 </Button>
               </div>
             </form>
