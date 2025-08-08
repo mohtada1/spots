@@ -23,7 +23,12 @@ export function Header() {
       
       // Close mobile menu on scroll
       if (isMobileMenuOpen) {
-        setIsMobileMenuOpen(false)
+        // Ignore the very first tick right after opening to prevent flicker
+        if (menuJustOpenedRef.current) {
+          menuJustOpenedRef.current = false
+        } else {
+          setIsMobileMenuOpen(false)
+        }
       }
       
       setScrollY(currentScrollY)
@@ -59,8 +64,10 @@ export function Header() {
       setLastScrollY(currentScrollY)
     }
 
-    // Check initial scroll position
-    handleScroll()
+    // Check initial scroll position (avoid closing menu on mount/re-run)
+    if (!isMobileMenuOpen) {
+      handleScroll()
+    }
     
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
