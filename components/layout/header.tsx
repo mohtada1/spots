@@ -147,7 +147,7 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="/" 
-              className="relative hover:text-food-primary transition-colors duration-500 py-2 border-b-2 border-food-primary"
+              className={`relative hover:text-food-primary transition-colors duration-500 py-2 border-b-2 ${pathname === '/' ? 'border-food-primary' : 'border-transparent hover:border-food-primary'}`}
               style={{
                 color: isHomepage 
                   ? `rgb(${255 - (198 * backgroundOpacity)}, ${255 - (190 * backgroundOpacity)}, ${255 - (174 * backgroundOpacity)})` // Homepage: white to gray
@@ -158,7 +158,7 @@ export function Header() {
             </Link>
             <Link 
               href="/search" 
-              className="relative hover:text-food-primary transition-colors duration-500 py-2 border-b-2 border-transparent hover:border-food-primary"
+              className={`relative hover:text-food-primary transition-colors duration-500 py-2 border-b-2 ${pathname?.startsWith('/search') ? 'border-food-primary' : 'border-transparent hover:border-food-primary'}`}
               style={{
                 color: isHomepage 
                   ? `rgb(${255 - (198 * backgroundOpacity)}, ${255 - (190 * backgroundOpacity)}, ${255 - (174 * backgroundOpacity)})` // Homepage: white to gray
