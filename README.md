@@ -3,7 +3,7 @@
 A modern restaurant reservation system built with Next.js and Supabase.
 
 ## Features
-..
+
 - Browse restaurants with filters (cuisine, location, price level)
 - Make online reservations
 - Admin dashboard for restaurant management
