@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, Users, Clock, CheckCircle, X, LogOut } from "lucide-react"
 import type { Reservation } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
@@ -318,83 +319,93 @@ function AdminDashboardContent() {
         </Card>
       </div>
 
-      {/* Restaurant Management */}
-      <RestaurantManager
-        restaurants={restaurants}
-        onRestaurantUpdated={handleRestaurantUpdated}
-        onRestaurantDeleted={handleRestaurantDeleted}
-        onRestaurantCreated={handleRestaurantCreated}
-      />
+      {/* Tabs Section */}
+      <Tabs defaultValue="reservations" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 rounded-xl">
+          <TabsTrigger value="reservations" className="rounded-xl">Reservations</TabsTrigger>
+          <TabsTrigger value="restaurants" className="rounded-xl">Restaurants</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="reservations" className="mt-6">
+          <Card className="rounded-xl border-0 shadow-md">
+            <CardHeader>
+              <CardTitle>Recent Reservations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {reservations.map((reservation) => (
+                  <div key={reservation.id} className="flex items-center justify-between p-4 border rounded-xl">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-4">
+                        <div>
+                          <h4 className="font-medium">{reservation.customer_name}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {reservation.party_size} people • {reservation.reservation_date} at{" "}
+                            {reservation.reservation_time}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {reservation.customer_phone} • ID: {reservation.confirmation_code}
+                          </p>
+                        </div>
+                      </div>
+                      {reservation.special_requests && (
+                        <p className="text-sm text-muted-foreground mt-2">Note: {reservation.special_requests}</p>
+                      )}
+                    </div>
 
-      {/* Live Bookings Feed */}
-      <Card className="rounded-xl border-0 shadow-md">
-        <CardHeader>
-          <CardTitle>Recent Reservations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {reservations.map((reservation) => (
-              <div key={reservation.id} className="flex items-center justify-between p-4 border rounded-xl">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <h4 className="font-medium">{reservation.customer_name}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {reservation.party_size} people • {reservation.reservation_date} at{" "}
-                        {reservation.reservation_time}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {reservation.customer_phone} • ID: {reservation.confirmation_code}
-                      </p>
+                    <div className="flex items-center space-x-2">
+                      <Badge
+                        variant="outline"
+                        className={
+                          reservation.status === "confirmed"
+                            ? "bg-foreground text-background"
+                            : reservation.status === "pending"
+                              ? "bg-yellow-500 text-white"
+                              : "bg-muted text-muted-foreground"
+                        }
+                      >
+                        {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
+                      </Badge>
+
+                      {reservation.status === "pending" && (
+                        <div className="flex space-x-1">
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusUpdate(reservation.id, "confirmed")}
+                            className="booking-highlight rounded-xl"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleStatusUpdate(reservation.id, "cancelled")}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {reservation.special_requests && (
-                    <p className="text-sm text-muted-foreground mt-2">Note: {reservation.special_requests}</p>
-                  )}
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Badge
-                    variant="outline"
-                    className={
-                      reservation.status === "confirmed"
-                        ? "bg-foreground text-background"
-                        : reservation.status === "pending"
-                          ? "bg-yellow-500 text-white"
-                          : "bg-muted text-muted-foreground"
-                    }
-                  >
-                    {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
-                  </Badge>
-
-                  {reservation.status === "pending" && (
-                    <div className="flex space-x-1">
-                      <Button
-                        size="sm"
-                        onClick={() => handleStatusUpdate(reservation.id, "confirmed")}
-                        className="booking-highlight rounded-xl"
-                      >
-                        <CheckCircle className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleStatusUpdate(reservation.id, "cancelled")}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                ))}
+                {reservations.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">No reservations found</div>
+                )}
               </div>
-            ))}
-            {reservations.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">No reservations found</div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="restaurants" className="mt-6">
+          <RestaurantManager
+            restaurants={restaurants}
+            onRestaurantUpdated={handleRestaurantUpdated}
+            onRestaurantDeleted={handleRestaurantDeleted}
+            onRestaurantCreated={handleRestaurantCreated}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
