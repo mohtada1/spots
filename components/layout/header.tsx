@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
@@ -136,18 +137,15 @@ export function Header() {
       <div className="container mx-auto px-food-md">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-food-primary rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
-            </div>
-            <span 
-              className="text-2xl font-poppins font-bold transition-colors duration-500"
-              style={{
-                color: isHomepage 
-                  ? `rgb(${255 - (224 * backgroundOpacity)}, ${255 - (214 * backgroundOpacity)}, ${255 - (200 * backgroundOpacity)})` // Homepage: white to gray
-                  : '#1f2937' // Other pages: always dark gray
-              }}
-            >Spots</span>
+          <Link href="/" className="flex items-center h-20">
+            <Image 
+              src="/spots.png" 
+              alt="Spots" 
+              width={150} 
+              height={50} 
+              className="h-12 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

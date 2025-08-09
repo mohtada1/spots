@@ -61,20 +61,20 @@ export default function HomePage() {
     router.push(`/restaurant/${restaurantId}`)
   }
 
-  // Filter restaurants by category - using actual data properties
+  // Filter restaurants by category
   const getRestaurantsByCategory = (category: string) => {
     switch (category) {
       case "featured":
         // Get top-rated restaurants as "featured"
         return restaurants.filter(r => r.rating >= 4.5).slice(0, 4)
       case "nearby":
-        // Get restaurants with available slots as "nearby & available"
-        return restaurants.filter(r => r.available_slots && r.available_slots.length > 0).slice(0, 4)
+        // Get restaurants in the same city as "nearby"
+        return restaurants.slice(0, 4)
       case "topRated":
         return restaurants.filter(r => r.rating >= 4.7).sort((a, b) => b.rating - a.rating).slice(0, 4)
       case "bookNow":
-        // Get restaurants with limited slots as "book now"
-        return restaurants.filter(r => r.available_slots && r.available_slots.length <= 2).slice(0, 4)
+        // Get restaurants that are open now
+        return restaurants.slice(0, 4)
       default:
         return restaurants.slice(0, 4)
     }
@@ -140,11 +140,13 @@ export default function HomePage() {
           {/* Cuisine and Price */}
           <div className="flex items-center gap-1 mb-2">
             <span className="text-xs text-gray-600">
-              {restaurant.cuisine.join(", ")}
+              {typeof restaurant.cuisine === 'string' 
+                ? restaurant.cuisine 
+                : (restaurant.cuisine as string[] | undefined)?.join(", ") || ''}
             </span>
             <span className="text-gray-400 text-xs">•</span>
             <span className="text-xs font-medium text-gray-700">
-              {restaurant.price_level}
+              {restaurant.price_range || '$$'}
             </span>
           </div>
 
@@ -152,7 +154,7 @@ export default function HomePage() {
           <div className="flex items-center gap-1 mb-2">
             <MapPin className="w-3 h-3 text-gray-400" />
             <span className="text-xs text-gray-600">
-              {restaurant.city}
+              {restaurant.location || 'Karachi'}
             </span>
           </div>
 
@@ -164,25 +166,7 @@ export default function HomePage() {
             </Badge>
           </div>
 
-          {/* Availability Times */}
-          <div className="flex gap-1">
-            {restaurant.available_slots && restaurant.available_slots.length > 0 ? (
-              restaurant.available_slots.slice(0, 2).map((slot, index) => (
-                <Badge key={index} variant="outline" className="text-xs px-2 py-1">
-                  {formatTimeSlot(slot)}
-                </Badge>
-              ))
-            ) : (
-              <>
-                <Badge variant="outline" className="text-xs px-2 py-1">
-                  7:00 PM
-                </Badge>
-                <Badge variant="outline" className="text-xs px-2 py-1">
-                  8:00 PM
-                </Badge>
-              </>
-            )}
-          </div>
+
         </div>
       </CardContent>
     </Card>
@@ -190,21 +174,8 @@ export default function HomePage() {
 
   // Restaurant card component for grid layout
   const RestaurantGridCard = ({ restaurant }: { restaurant: Restaurant }) => {
-    // Determine badge based on restaurant properties
-    const getBadgeInfo = () => {
-      if (restaurant.rating >= 4.5) {
-        return { show: true, text: "Featured", color: "bg-red-500" }
-      }
-      if (restaurant.available_slots && restaurant.available_slots.length > 0) {
-        return { show: true, text: "Available", color: "bg-green-500" }
-      }
-      if (restaurant.available_slots && restaurant.available_slots.length <= 2) {
-        return { show: true, text: "Almost Full", color: "bg-orange-500" }
-      }
-      return { show: false, text: "", color: "" }
-    }
-
-    const badgeInfo = getBadgeInfo()
+    // Only show Featured badge for highly-rated restaurants
+    const showFeaturedBadge = restaurant.rating >= 4.5
 
     return (
       <Card 
@@ -234,11 +205,11 @@ export default function HomePage() {
               <span className="text-gray-400 text-4xl">🍽️</span>
             </div>
             
-            {/* Status Badge */}
-            {badgeInfo.show && (
+            {/* Featured Badge */}
+            {showFeaturedBadge && (
               <div className="absolute top-3 left-3">
-                <Badge className={`text-xs font-medium text-white ${badgeInfo.color} hover:${badgeInfo.color}`}>
-                  {badgeInfo.text}
+                <Badge className="text-xs font-medium text-white bg-red-500 hover:bg-red-500">
+                  Featured
                 </Badge>
               </div>
             )}
@@ -260,11 +231,13 @@ export default function HomePage() {
             {/* Cuisine and Price */}
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm text-gray-600">
-                {restaurant.cuisine.join(", ")}
+                {typeof restaurant.cuisine === 'string' 
+                ? restaurant.cuisine 
+                : (restaurant.cuisine as string[] | undefined)?.join(", ") || ''}
               </span>
               <span className="text-gray-400">•</span>
               <span className="text-sm font-medium text-gray-700">
-                {restaurant.price_level}
+                {restaurant.price_range || '$$'}
               </span>
             </div>
 
@@ -272,31 +245,15 @@ export default function HomePage() {
             <div className="flex items-center gap-1 mb-3">
               <MapPin className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-600">
-                {restaurant.city}
+                {restaurant.location || 'Karachi'}
               </span>
             </div>
 
             {/* Availability Times */}
             <div className="flex gap-1 flex-wrap">
-              {restaurant.available_slots && restaurant.available_slots.length > 0 ? (
-                restaurant.available_slots.slice(0, 3).map((slot, index) => (
-                  <Badge key={index} variant="outline" className="text-xs px-2 py-1">
-                    {slot}
-                  </Badge>
-                ))
-              ) : (
-                <>
-                  <Badge variant="outline" className="text-xs px-2 py-1">
-                    7:00 PM
-                  </Badge>
-                  <Badge variant="outline" className="text-xs px-2 py-1">
-                    8:00 PM
-                  </Badge>
-                  <Badge variant="outline" className="text-xs px-2 py-1">
-                    +1
-                  </Badge>
-                </>
-              )}
+              <Badge variant="outline" className="text-xs px-2 py-1">
+                Reserve Now
+              </Badge>
             </div>
           </div>
         </CardContent>
@@ -309,11 +266,15 @@ export default function HomePage() {
     if (selectedCuisine === "All Restaurants") {
       return restaurants
     }
-    return restaurants.filter(restaurant => 
-      restaurant.cuisine.some(cuisine => 
-        cuisine.toLowerCase() === selectedCuisine.toLowerCase()
+    return restaurants.filter(restaurant => {
+      const cuisines = typeof restaurant.cuisine === 'string' 
+        ? [restaurant.cuisine]
+        : restaurant.cuisine || [];
+      
+      return cuisines.some(cuisine => 
+        cuisine.toLowerCase().includes(selectedCuisine.toLowerCase())
       )
-    )
+    })
   }
 
   // Cuisine filter pills
