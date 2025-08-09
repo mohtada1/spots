@@ -1,14 +1,30 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, MapPin, Star, Filter } from "lucide-react"
+import { Search, MapPin, Star, Filter, Clock, Users, ChevronLeft, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { api } from "@/lib/api"
-import type { Restaurant, SearchFilters } from "@/lib/types"
+import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import type { Restaurant, SearchFilters } from "@/lib/types"
+import { api } from "@/lib/api"
+
+// Utility function to format ISO datetime to readable time
+const formatTimeSlot = (isoString: string): string => {
+  try {
+    const date = new Date(isoString)
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    })
+  } catch {
+    return isoString // fallback to original if parsing fails
+  }
+}
 
 export default function HomePage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
@@ -140,12 +156,20 @@ export default function HomePage() {
             </span>
           </div>
 
+          {/* Opening Hours */}
+          <div className="flex gap-1">
+            <Badge variant="outline" className="text-xs px-2 py-1">
+              <Clock className="h-3 w-3 mr-1" />
+              {restaurant.opening_hours || "12:00 PM - 11:00 PM"}
+            </Badge>
+          </div>
+
           {/* Availability Times */}
           <div className="flex gap-1">
             {restaurant.available_slots && restaurant.available_slots.length > 0 ? (
               restaurant.available_slots.slice(0, 2).map((slot, index) => (
                 <Badge key={index} variant="outline" className="text-xs px-2 py-1">
-                  {slot}
+                  {formatTimeSlot(slot)}
                 </Badge>
               ))
             ) : (

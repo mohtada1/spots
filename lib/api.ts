@@ -15,9 +15,7 @@ export const api = {
         searchParams.append('cuisine', filters.cuisine.join(','))
       }
       
-      if (filters?.halal === true) {
-        searchParams.append('halal', 'true')
-      }
+
       
       if (filters?.priceLevel && filters.priceLevel.length > 0) {
         searchParams.append('price_level', filters.priceLevel.join(','))

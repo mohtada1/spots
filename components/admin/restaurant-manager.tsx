@@ -47,13 +47,12 @@ export function RestaurantManager({
       name: "",
       city: "",
       cuisine: [],
-      halal: true,
-      price_level: "₨₨",
+      price_level: "$$",
       rating: 0,
       description: "",
       address: "",
       phone: "",
-      available_slots: [],
+      opening_hours: "",
     })
   }
 
@@ -78,16 +77,15 @@ export function RestaurantManager({
         // Create new restaurant via API
         const newRestaurantData = {
           name: formData.name!,
-          city: formData.city!,
           cuisine: formData.cuisine!,
-          halal: formData.halal || false,
-          price_level: formData.price_level || "₨₨",
           rating: formData.rating || 0,
           image_url: formData.image_url || null,
+          location: formData.address || null,
+          price_range: formData.price_level || "$$",
           description: formData.description || null,
-          address: formData.address || null,
+          opening_hours: formData.opening_hours || null,
           phone: formData.phone || null,
-          available_slots: formData.available_slots || [],
+          website: formData.website || null,
         }
         await onRestaurantCreated(newRestaurantData)
         setIsCreating(false)
@@ -268,6 +266,16 @@ export function RestaurantManager({
             </div>
 
             <div>
+              <Label htmlFor="opening_hours">Opening Hours</Label>
+              <Input
+                id="opening_hours"
+                placeholder="e.g., 12:00 PM - 11:00 PM"
+                value={formData.opening_hours || ""}
+                onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
+              />
+            </div>
+
+            <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
@@ -391,7 +399,7 @@ export function RestaurantManager({
                           {cuisine}
                         </Badge>
                       ))}
-                      {restaurant.halal && <Badge className="bg-green-500 text-white">Halal</Badge>}
+
                     </div>
                     <p className="text-muted-foreground text-sm mb-2">
                       {restaurant.city} • {restaurant.price_level} • ⭐ {restaurant.rating}

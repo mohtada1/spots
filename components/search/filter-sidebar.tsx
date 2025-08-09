@@ -31,7 +31,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
     onChange({
       city: "",
       cuisine: [],
-      halal: null,
+
       priceLevel: [],
     })
   }
@@ -92,17 +92,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
           <AccordionTrigger className="text-sm font-medium">Dietary Options</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="halal"
-                  checked={filters.halal === true}
-                  onCheckedChange={(checked) => onChange({ ...filters, halal: checked ? true : null })}
-                  className="rounded-md"
-                />
-                <Label htmlFor="halal" className="text-sm cursor-pointer">
-                  Halal Only
-                </Label>
-              </div>
+
             </div>
           </AccordionContent>
         </AccordionItem>

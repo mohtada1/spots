@@ -69,9 +69,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
                   target.src = '/placeholder.svg?height=200&width=200';
                 }}
               />
-              {restaurant.halal && (
-                <Badge className="absolute top-2 right-2 bg-foreground text-background rounded-full">Halal</Badge>
-              )}
+
             </div>
 
             <CardContent className="flex-1 p-food-md md:p-food-lg">

@@ -63,9 +63,7 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
                       target.src = '/placeholder.svg?height=300&width=400';
                     }}
                   />
-                  {restaurant.halal && (
-                    <Badge className="absolute top-3 right-3 bg-foreground text-background rounded-full">Halal</Badge>
-                  )}
+
                 </div>
                 <CardContent className="p-food-md">
                   <h3 className="text-xl font-medium font-poppins mb-food-sm group-hover:text-food-primary transition-colors duration-200 text-food-text">

@@ -19,7 +19,7 @@ function SearchPageContent() {
   const [filters, setFilters] = useState<SearchFilters>({
     city: searchParams.get("city") || "",
     cuisine: [],
-    halal: null,
+
     priceLevel: [],
   })
 
@@ -36,7 +36,7 @@ function SearchPageContent() {
 
       if (filters.city) searchFilters.city = filters.city
       if (filters.cuisine.length > 0) searchFilters.cuisine = filters.cuisine
-      if (filters.halal !== null) searchFilters.halal = filters.halal
+
       if (filters.priceLevel.length > 0) searchFilters.priceLevel = filters.priceLevel
 
       let restaurants = await api.getRestaurants(searchFilters)

@@ -23,16 +23,8 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
               fill
               className="object-cover"
               priority
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = '/placeholder.svg?height=600&width=800';
-              }}
             />
-            {restaurant.halal && (
-              <Badge className="absolute top-4 right-4 bg-foreground text-background rounded-full">
-                Halal Certified
-              </Badge>
-            )}
+
           </div>
 
           {/* Restaurant Info */}

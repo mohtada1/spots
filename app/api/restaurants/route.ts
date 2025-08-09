@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     // Get query parameters for filtering
     const city = searchParams.get('city')
     const cuisine = searchParams.get('cuisine')
-    const halal = searchParams.get('halal')
+
     const priceLevel = searchParams.get('price_level')
 
     let query = supabase
@@ -28,9 +28,7 @@ export async function GET(request: NextRequest) {
       query = query.overlaps("cuisine", cuisineArray)
     }
 
-    if (halal === 'true') {
-      query = query.eq("halal", true)
-    }
+
 
     if (priceLevel) {
       const priceLevels = priceLevel.split(',')

@@ -1,18 +1,17 @@
 export interface Restaurant {
   id: string
   name: string
-  city: string
-  cuisine: string[]
-  halal: boolean
-  price_level: string
+  cuisine: string
   rating: number
-  image_url: string | null
-  description?: string | null
-  address?: string | null
-  phone?: string | null
-  available_slots: string[]
-  created_at?: string
-  updated_at?: string
+  image_url: string
+  location: string
+  price_range: string
+  description: string
+  opening_hours: string
+  phone: string
+  website?: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Reservation {
@@ -35,7 +34,6 @@ export interface Reservation {
 export interface SearchFilters {
   city: string
   cuisine: string[]
-  halal: boolean | null
   priceLevel: string[]
 }
 
