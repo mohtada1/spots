@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { createSlugId } from '@/lib/utils/slug'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://spots.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://spotspk.com'
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
