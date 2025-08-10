@@ -94,10 +94,10 @@ export default function HomePage() {
       <CardContent className="p-0">
         {/* Restaurant Image */}
         <div className="relative h-32 bg-gray-200">
-          {restaurant.image_url ? (
+          {restaurant.images?.[0]?.blob_url ? (
             <img 
-              src={restaurant.image_url} 
-              alt={restaurant.name}
+              src={restaurant.images[0].blob_url} 
+              alt={restaurant.images[0].alt_text || restaurant.name}
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
@@ -109,8 +109,8 @@ export default function HomePage() {
             />
           ) : null}
           
-          {/* Fallback placeholder - shown when no image_url or on error */}
-          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.image_url ? 'hidden' : ''}`}>
+          {/* Fallback placeholder - shown when no images or on error */}
+          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.images?.[0]?.blob_url ? 'hidden' : ''}`}>
             <span className="text-gray-400 text-2xl">🍽️</span>
           </div>
           
@@ -146,7 +146,7 @@ export default function HomePage() {
             </span>
             <span className="text-gray-400 text-xs">•</span>
             <span className="text-xs font-medium text-gray-700">
-              {restaurant.price_range || '$$'}
+              {restaurant.price_level || '$$'}
             </span>
           </div>
 
@@ -154,7 +154,7 @@ export default function HomePage() {
           <div className="flex items-center gap-1 mb-2">
             <MapPin className="w-3 h-3 text-gray-400" />
             <span className="text-xs text-gray-600">
-              {restaurant.location || 'Karachi'}
+              {restaurant.city || 'Karachi'}
             </span>
           </div>
 
@@ -185,10 +185,10 @@ export default function HomePage() {
         <CardContent className="p-0">
           {/* Restaurant Image */}
           <div className="relative h-48 bg-gray-200">
-            {restaurant.image_url ? (
+            {restaurant.images?.[0]?.blob_url ? (
               <img 
-                src={restaurant.image_url} 
-                alt={restaurant.name}
+                src={restaurant.images[0].blob_url} 
+                alt={restaurant.images[0].alt_text || restaurant.name}
                 className="w-full h-full object-cover"
                 loading="lazy"
                 onError={(e) => {
@@ -200,8 +200,8 @@ export default function HomePage() {
               />
             ) : null}
             
-            {/* Fallback placeholder - shown when no image_url or on error */}
-            <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.image_url ? 'hidden' : ''}`}>
+            {/* Fallback placeholder - shown when no images or on error */}
+            <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.images?.[0]?.blob_url ? 'hidden' : ''}`}>
               <span className="text-gray-400 text-4xl">🍽️</span>
             </div>
             
@@ -237,7 +237,7 @@ export default function HomePage() {
               </span>
               <span className="text-gray-400">•</span>
               <span className="text-sm font-medium text-gray-700">
-                {restaurant.price_range || '$$'}
+                {restaurant.price_level || '$$'}
               </span>
             </div>
 
@@ -245,7 +245,7 @@ export default function HomePage() {
             <div className="flex items-center gap-1 mb-3">
               <MapPin className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-600">
-                {restaurant.location || 'Karachi'}
+                {restaurant.city || 'Karachi'}
               </span>
             </div>
 

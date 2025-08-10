@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { ImageUpload } from "./image-upload"
+import { RestaurantImageManager } from "@/components/admin/restaurant-image-manager"
 import { Plus, Edit, Trash2, Save, X } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import type { Restaurant } from "@/lib/types"
@@ -79,20 +79,22 @@ export function RestaurantManager({
           name: formData.name!,
           cuisine: formData.cuisine!,
           rating: formData.rating || 0,
-          image_url: formData.image_url || null,
-          location: formData.address || null,
-          price_range: formData.price_level || "$$",
+          city: formData.city || formData.address || "Karachi",
+          price_level: formData.price_level || "$$",
           description: formData.description || null,
           opening_hours: formData.opening_hours || null,
           phone: formData.phone || null,
-          website: formData.website || null,
+          address: formData.address || null,
         }
         await onRestaurantCreated(newRestaurantData)
         setIsCreating(false)
       } else {
-        // Update existing restaurant via API
+        // Update existing restaurant via API - exclude image-related fields
+        const { image_url, images, ...cleanFormData } = formData as any
         const updatedRestaurant: Restaurant = {
-          ...(formData as Restaurant),
+          ...cleanFormData,
+          city: cleanFormData.city || cleanFormData.address || "Karachi",
+          price_level: cleanFormData.price_level || "$$",
         }
         await onRestaurantUpdated(updatedRestaurant)
         setEditingId(null)
@@ -236,14 +238,7 @@ export function RestaurantManager({
                   onChange={(e) => setFormData({ ...formData, rating: Number.parseFloat(e.target.value) || 0 })}
                 />
               </div>
-              <div className="flex items-center space-x-2 pt-6">
-                <Checkbox
-                  id="halal"
-                  checked={formData.halal || false}
-                  onCheckedChange={(checked) => setFormData({ ...formData, halal: checked as boolean })}
-                />
-                <Label htmlFor="halal">Halal Certified</Label>
-              </div>
+              {/* Halal field removed - all restaurants are halal by default */}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -285,16 +280,7 @@ export function RestaurantManager({
               />
             </div>
 
-            <div>
-              <Label>Restaurant Image</Label>
-              <ImageUpload
-                currentImageUrl={formData.image_url}
-                onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
-                onImageDeleted={() => setFormData({ ...formData, image_url: null })}
-                restaurantId={formData.id || "new"}
-                className="mt-2"
-              />
-            </div>
+            {/* Image management is now handled separately via the new image system */}
 
             <div className="flex space-x-2">
               <Button onClick={handleSave}>
@@ -365,16 +351,7 @@ export function RestaurantManager({
                   </div>
                 </div>
 
-                <div>
-                  <Label>Restaurant Image</Label>
-                  <ImageUpload
-                    currentImageUrl={formData.image_url}
-                    onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
-                    onImageDeleted={() => setFormData({ ...formData, image_url: null })}
-                    restaurantId={restaurant.id}
-                    className="mt-2"
-                  />
-                </div>
+                {/* Image management moved to separate system */}
 
                 <div className="flex space-x-2">
                   <Button onClick={handleSave} className="booking-highlight rounded-xl">
@@ -422,6 +399,17 @@ export function RestaurantManager({
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
+                </div>
+                
+                {/* Image Management Section */}
+                <div className="mt-6 pt-6 border-t">
+                  <RestaurantImageManager 
+                    restaurantId={restaurant.id}
+                    onImagesUpdated={() => {
+                      // Refresh restaurant data if needed
+                      console.log('Images updated for restaurant:', restaurant.id)
+                    }}
+                  />
                 </div>
               </CardContent>
             )}

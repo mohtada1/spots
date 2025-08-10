@@ -1,18 +1,26 @@
+export interface RestaurantImage {
+  id: string
+  blob_url: string
+  alt_text: string | null
+  display_order: number | null
+  is_primary: boolean | null
+}
+
 export interface Restaurant {
   id: string
   name: string
   cuisine: string[]
-  rating: number
-  image_url: string
-  address: string
+  rating: number | null
+  address: string | null
   city: string
   price_level: string
-  description: string
-  opening_hours: string
-  phone: string
+  description: string | null
+  opening_hours: string | null
+  phone: string | null
   website?: string
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
+  images?: RestaurantImage[]
 }
 
 export interface Reservation {

@@ -16,7 +16,16 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("restaurants")
-      .select("*")
+      .select(`
+        *,
+        images:restaurant_images(
+          id,
+          blob_url,
+          alt_text,
+          display_order,
+          is_primary
+        )
+      `)
 
     // Apply filters
     if (city) {

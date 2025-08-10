@@ -10,7 +10,16 @@ export async function GET(
 
     const { data: restaurant, error } = await supabase
       .from("restaurants")
-      .select("*")
+      .select(`
+        *,
+        images:restaurant_images(
+          id,
+          blob_url,
+          alt_text,
+          display_order,
+          is_primary
+        ).order(is_primary.desc, display_order.asc)
+      `)
       .eq("id", id)
       .single()
 

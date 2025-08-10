@@ -60,8 +60,8 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
           <div className="flex flex-col md:flex-row">
             <div className="relative h-48 md:h-32 md:w-48 overflow-hidden bg-gray-100">
               <Image
-                src={restaurant.image_url || '/placeholder.svg?height=200&width=200'}
-                alt={restaurant.name}
+                src={restaurant.images?.[0]?.blob_url || '/placeholder.svg?height=200&width=200'}
+                alt={restaurant.images?.[0]?.alt_text || restaurant.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {

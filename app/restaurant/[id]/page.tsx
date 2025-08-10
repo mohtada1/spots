@@ -3,8 +3,8 @@ import { useState, useEffect } from "react"
 import { useParams, notFound } from "next/navigation"
 import { AvailabilityPicker } from "@/components/restaurant/availability-picker"
 import { BookingDialog } from "@/components/reservation/booking-dialog"
+import { ImageGallery } from "@/components/ui/image-gallery"
 import { api } from "@/lib/api"
-import Image from "next/image"
 import { MapPin, Phone, Clock } from "lucide-react"
 import type { Restaurant } from "@/lib/types"
 
@@ -25,6 +25,8 @@ export default function RestaurantPage() {
           notFound()
         }
         setRestaurant(restaurantData)
+        console.log('Restaurant data:', restaurantData)
+        console.log('Images:', restaurantData?.images)
       } catch (error) {
         console.error('Error fetching restaurant:', error)
         notFound()
@@ -58,16 +60,14 @@ export default function RestaurantPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Centered Restaurant Image */}
+      {/* Restaurant Image Gallery */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-center mb-8">
-          <div className="relative h-64 md:h-96 w-full max-w-2xl rounded-food-small overflow-hidden bg-gray-100">
-            <Image
-              src={restaurant.image_url || '/placeholder.svg?height=600&width=800'}
-              alt={restaurant.name}
-              fill
-              className="object-cover"
-              priority
+          <div className="w-full max-w-2xl">
+            <ImageGallery 
+              images={restaurant.images || []} 
+              restaurantName={restaurant.name}
+              className="w-full"
             />
           </div>
         </div>
