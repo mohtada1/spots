@@ -1,12 +1,11 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useParams, notFound } from "next/navigation"
-import { RestaurantHero } from "@/components/restaurant/restaurant-hero"
 import { AvailabilityPicker } from "@/components/restaurant/availability-picker"
 import { BookingDialog } from "@/components/reservation/booking-dialog"
 import { api } from "@/lib/api"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
+import { MapPin, Phone, Clock } from "lucide-react"
 import type { Restaurant } from "@/lib/types"
 
 export default function RestaurantPage() {
@@ -59,82 +58,86 @@ export default function RestaurantPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <RestaurantHero restaurant={restaurant} />
-
+      {/* Centered Restaurant Image */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Menu Preview */}
-            <Card className="rounded-xl border-0 shadow-md">
-              <CardHeader>
-                <CardTitle>Popular Dishes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map((item) => (
-                    <div key={item} className="flex space-x-4 p-4 border rounded-xl">
-                      <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-                        <Image
-                          src={`/placeholder.svg?height=64&width=64`}
-                          alt={`Dish ${item}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Signature Dish {item}</h4>
-                        <p className="text-sm text-muted-foreground">Delicious description</p>
-                        <p className="text-sm font-medium">₨ 1,200</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+        <div className="flex justify-center mb-8">
+          <div className="relative h-64 md:h-96 w-full max-w-2xl rounded-food-small overflow-hidden bg-gray-100">
+            <Image
+              src={restaurant.image_url || '/placeholder.svg?height=600&width=800'}
+              alt={restaurant.name}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        </div>
 
-            {/* Reviews */}
-            <Card className="rounded-xl border-0 shadow-md">
-              <CardHeader>
-                <CardTitle>Recent Reviews</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[1, 2, 3].map((review) => (
-                    <div key={review} className="border-b pb-4 last:border-b-0">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                          <Image
-                            src={`/placeholder.svg?height=32&width=32`}
-                            alt={`Reviewer ${review}`}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">Customer {review}</p>
-                          <div className="flex items-center space-x-1">
-                            {[...Array(5)].map((_, i) => (
-                              <span key={i} className="text-yellow-400 text-xs">
-                                ★
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Great food and excellent service. Highly recommended!
-                      </p>
-                    </div>
+        {/* Restaurant Info and Reservation Layout */}
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            {/* Restaurant Info/Bio - Left Side */}
+            <div className="lg:col-span-3 space-y-6">
+            <div>
+              <div className="flex items-start justify-between mb-4">
+                <h1 className="text-3xl md:text-4xl font-bold font-poppins text-food-text">{restaurant.name}</h1>
+              </div>
+
+              <div className="flex items-center space-x-4 text-gray-600 mb-4">
+                <div className="flex items-center space-x-1">
+                  <span className="text-red-500">★</span>
+                  <span className="font-medium">{restaurant.rating}</span>
+                  <span className="text-sm">(124 reviews)</span>
+                </div>
+                <span className="text-lg font-medium">{restaurant.price_level}</span>
+              </div>
+
+              <div className="space-y-2 text-gray-600 mb-6">
+                {(restaurant.address || restaurant.city) && (
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <span>{restaurant.address ? `${restaurant.address}, ${restaurant.city}` : restaurant.city}</span>
+                  </div>
+                )}
+                {restaurant.phone && (
+                  <div className="flex items-center space-x-2">
+                    <Phone className="h-4 w-4 text-gray-400" />
+                    <span>{restaurant.phone}</span>
+                  </div>
+                )}
+                {restaurant.opening_hours && (
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span>{restaurant.opening_hours}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {restaurant.cuisine && restaurant.cuisine.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-food-text">Cuisine</h3>
+                <div className="flex flex-wrap gap-2">
+                  {restaurant.cuisine.map((cuisineType, index) => (
+                    <span key={index} className="px-3 py-1 bg-gray-100 rounded-full text-sm border">
+                      {cuisineType}
+                    </span>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            )}
+
+            {restaurant.description && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-food-text">About</h3>
+                <p className="text-gray-600 leading-relaxed">{restaurant.description}</p>
+              </div>
+            )}
           </div>
 
-          {/* Reservation Widget */}
-          <div className="lg:col-span-1">
-            <AvailabilityPicker restaurantId={restaurant.id} onSelect={handleSlotSelect} />
+            {/* Reservation Widget - Right Side */}
+            <div className="lg:col-span-2">
+              <AvailabilityPicker restaurantId={restaurant.id} onSelect={handleSlotSelect} />
+            </div>
           </div>
         </div>
       </div>

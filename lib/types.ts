@@ -1,11 +1,12 @@
 export interface Restaurant {
   id: string
   name: string
-  cuisine: string
+  cuisine: string[]
   rating: number
   image_url: string
-  location: string
-  price_range: string
+  address: string
+  city: string
+  price_level: string
   description: string
   opening_hours: string
   phone: string
