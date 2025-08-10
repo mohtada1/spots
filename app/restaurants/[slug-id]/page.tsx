@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 
 import { ImageGallery } from "@/components/ui/image-gallery"
 import { RestaurantBooking } from "@/components/restaurant/restaurant-booking"
+import { RestaurantMap } from "@/components/restaurant/restaurant-map"
 import { supabase } from "@/lib/supabase"
 import { parseSlugId } from "@/lib/utils/slug"
 import { MapPin, Phone, Clock } from "lucide-react"
@@ -268,6 +269,16 @@ export default async function RestaurantPage({ params }: { params: { 'slug-id': 
                     <p className="text-gray-600 leading-relaxed">{restaurant.description}</p>
                   </div>
                 )}
+
+                {/* Map Section - Desktop: Below About, Mobile: Will be moved to bottom */}
+                {restaurant.location && (
+                  <div className="hidden lg:block">
+                    <RestaurantMap 
+                      location={restaurant.location}
+                      restaurantName={restaurant.name}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Reservation Widget - Right Side */}
@@ -275,6 +286,16 @@ export default async function RestaurantPage({ params }: { params: { 'slug-id': 
                 <RestaurantBooking restaurant={restaurant} />
               </div>
             </div>
+
+            {/* Map Section - Mobile: At bottom of page */}
+            {restaurant.location && (
+              <div className="lg:hidden mt-8">
+                <RestaurantMap 
+                  location={restaurant.location}
+                  restaurantName={restaurant.name}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

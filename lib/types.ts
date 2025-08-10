@@ -17,7 +17,8 @@ export interface Restaurant {
   description: string | null
   opening_hours: string | null
   phone: string | null
-  website?: string
+  location: string | null
+  website: string | null
   created_at: string | null
   updated_at: string | null
   images?: RestaurantImage[]

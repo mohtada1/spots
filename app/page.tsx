@@ -58,9 +58,9 @@ export default function HomePage() {
   }
 
   // Navigate to restaurant detail page
-  const handleRestaurantClick = (restaurantId: string) => {
-    // Need restaurant name for URL generation - this should be updated to pass full restaurant object
-    router.push(`/restaurant/${restaurantId}`) // TODO: Update to use getRestaurantUrl when restaurant object is available
+  const handleRestaurantClick = (restaurant: Restaurant) => {
+    const url = getRestaurantUrl(restaurant)
+    router.push(url)
   }
 
   // Filter restaurants by category
@@ -68,12 +68,12 @@ export default function HomePage() {
     switch (category) {
       case "featured":
         // Get top-rated restaurants as "featured"
-        return restaurants.filter(r => r.rating >= 4.5).slice(0, 4)
+        return restaurants.filter(r => r.rating && r.rating >= 4.5).slice(0, 4)
       case "nearby":
         // Get restaurants in the same city as "nearby"
         return restaurants.slice(0, 4)
       case "topRated":
-        return restaurants.filter(r => r.rating >= 4.7).sort((a, b) => b.rating - a.rating).slice(0, 4)
+        return restaurants.filter(r => r.rating && r.rating >= 4.7).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4)
       case "bookNow":
         // Get restaurants that are open now
         return restaurants.slice(0, 4)
@@ -91,7 +91,7 @@ export default function HomePage() {
   }) => (
     <Card 
       className="w-72 flex-shrink-0 shadow-sm hover:shadow-md transition-shadow duration-200 border-0 bg-white rounded-xl overflow-hidden cursor-pointer"
-      onClick={() => handleRestaurantClick(restaurant.id)}
+      onClick={() => handleRestaurantClick(restaurant)}
     >
       <CardContent className="p-0">
         {/* Restaurant Image */}
@@ -134,8 +134,8 @@ export default function HomePage() {
               {restaurant.name}
             </h3>
             <div className="flex items-center gap-1 flex-shrink-0">
-              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-              <span className="text-xs font-medium text-gray-700">{restaurant.rating.toFixed(1)}</span>
+              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span className="text-xs font-medium">{restaurant.rating || 'N/A'}</span>
             </div>
           </div>
 
@@ -167,8 +167,6 @@ export default function HomePage() {
               {restaurant.opening_hours || "12:00 PM - 11:00 PM"}
             </Badge>
           </div>
-
-
         </div>
       </CardContent>
     </Card>
@@ -182,7 +180,7 @@ export default function HomePage() {
     return (
       <Card 
         className="shadow-sm hover:shadow-md transition-shadow duration-200 border-0 bg-white rounded-xl overflow-hidden cursor-pointer"
-        onClick={() => handleRestaurantClick(restaurant.id)}
+        onClick={() => handleRestaurantClick(restaurant)}
       >
         <CardContent className="p-0">
           {/* Restaurant Image */}
@@ -225,8 +223,8 @@ export default function HomePage() {
                 {restaurant.name}
               </h3>
               <div className="flex items-center gap-1 flex-shrink-0">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium text-gray-700">{restaurant.rating.toFixed(1)}</span>
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-medium">{restaurant.rating || 'N/A'}</span>
               </div>
             </div>
 

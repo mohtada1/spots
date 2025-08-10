@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import-restaurants": "node scripts/bulk-import-restaurants.js"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
@@ -28,6 +29,8 @@
     "@vercel/blob": "^1.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.1",
     "lucide-react": "^0.454.0",
     "next": "14.2.16",
     "next-themes": "latest",

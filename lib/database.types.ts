@@ -135,12 +135,15 @@ export type Database = {
           cuisine: string[]
           description: string | null
           id: string
+          location: string | null
           name: string
           opening_hours: string | null
           phone: string | null
           price_level: string
           rating: number | null
+          slug: string | null
           updated_at: string | null
+          website: string | null
         }
         Insert: {
           address?: string | null
@@ -149,12 +152,15 @@ export type Database = {
           cuisine?: string[]
           description?: string | null
           id?: string
+          location?: string | null
           name: string
           opening_hours?: string | null
           phone?: string | null
           price_level: string
           rating?: number | null
+          slug?: string | null
           updated_at?: string | null
+          website?: string | null
         }
         Update: {
           address?: string | null
@@ -163,12 +169,15 @@ export type Database = {
           cuisine?: string[]
           description?: string | null
           id?: string
+          location?: string | null
           name?: string
           opening_hours?: string | null
           phone?: string | null
           price_level?: string
           rating?: number | null
+          slug?: string | null
           updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }

@@ -83,6 +83,28 @@ export function RestaurantManager({
         return
       }
 
+      // Validate Google Maps URL if provided
+      if (formData.location && formData.location.trim()) {
+        try {
+          const url = new URL(formData.location)
+          if (!url.hostname.includes('google.com') || !formData.location.includes('maps')) {
+            toast({
+              title: "Invalid Location URL",
+              description: "Please provide a valid Google Maps link",
+              variant: "destructive",
+            })
+            return
+          }
+        } catch {
+          toast({
+            title: "Invalid Location URL",
+            description: "Please provide a valid Google Maps link",
+            variant: "destructive",
+          })
+          return
+        }
+      }
+
       if (isCreating) {
         // Create new restaurant via API
         const newRestaurantData = {
@@ -95,6 +117,8 @@ export function RestaurantManager({
           opening_hours: formData.opening_hours || null,
           phone: formData.phone || null,
           address: formData.address || null,
+          location: formData.location || null,
+          website: formData.website || null,
         }
         await onRestaurantCreated(newRestaurantData)
         setIsCreating(false)
@@ -277,6 +301,19 @@ export function RestaurantManager({
             </div>
 
             <div>
+              <Label htmlFor="location">Google Maps Location</Label>
+              <Input
+                id="location"
+                placeholder="Paste Google Maps link here"
+                value={formData.location || ""}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Copy and paste a Google Maps link (e.g., from sharing a location)
+              </p>
+            </div>
+
+            <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
@@ -360,7 +397,107 @@ export function RestaurantManager({
                   </div>
                 </div>
 
-                {/* Image management moved to separate system */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price_level">Price Level *</Label>
+                    <Select
+                      value={formData.price_level || ""}
+                      onValueChange={(value) => setFormData({ ...formData, price_level: value })}
+                    >
+                      <SelectTrigger className="rounded-xl">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {priceLevels.map((level) => (
+                          <SelectItem key={level} value={level}>
+                            {level}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="rating">Rating</Label>
+                    <Input
+                      id="rating"
+                      type="number"
+                      min="0"
+                      max="5"
+                      step="0.1"
+                      value={formData.rating || ""}
+                      onChange={(e) => setFormData({ ...formData, rating: Number.parseFloat(e.target.value) || 0 })}
+                      className="rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                      id="address"
+                      value={formData.address || ""}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      className="rounded-xl"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone || ""}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="opening_hours">Opening Hours</Label>
+                  <Input
+                    id="opening_hours"
+                    placeholder="e.g., 12:00 PM - 11:00 PM"
+                    value={formData.opening_hours || ""}
+                    onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
+                    className="rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="location">Google Maps Location</Label>
+                  <Input
+                    id="location"
+                    placeholder="Paste Google Maps link here"
+                    value={formData.location || ""}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="rounded-xl"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Copy and paste a Google Maps link (e.g., from sharing a location)
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="website">Website</Label>
+                  <Input
+                    id="website"
+                    placeholder="https://restaurant-website.com"
+                    value={formData.website || ""}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    className="rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description || ""}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="rounded-xl"
+                  />
+                </div>
 
                 <div className="flex space-x-2">
                   <Button onClick={handleSave} className="booking-highlight rounded-xl">
