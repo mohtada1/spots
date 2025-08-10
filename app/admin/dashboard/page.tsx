@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useAdminAuth } from "@/lib/admin-auth-context"
 import { AdminRouteGuard } from "@/components/admin/admin-route-guard"
 import { RestaurantManager } from "@/components/admin/restaurant-manager"
+import { CategoryManager } from "@/components/admin/category-manager"
 import type { Restaurant } from "@/lib/types"
 
 function AdminDashboardContent() {
@@ -357,9 +358,10 @@ function AdminDashboardContent() {
 
       {/* Tabs Section */}
       <Tabs defaultValue="reservations" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 rounded-xl">
+        <TabsList className="grid w-full grid-cols-3 rounded-xl">
           <TabsTrigger value="reservations" className="rounded-xl">Reservations</TabsTrigger>
           <TabsTrigger value="restaurants" className="rounded-xl">Restaurants</TabsTrigger>
+          <TabsTrigger value="categories" className="rounded-xl">Categories</TabsTrigger>
         </TabsList>
         
         <TabsContent value="reservations" className="mt-6">
@@ -451,6 +453,10 @@ function AdminDashboardContent() {
             onRestaurantDeleted={handleRestaurantDeleted}
             onRestaurantCreated={handleRestaurantCreated}
           />
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-6">
+          <CategoryManager />
         </TabsContent>
       </Tabs>
     </div>

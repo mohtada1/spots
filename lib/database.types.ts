@@ -149,7 +149,7 @@ export type Database = {
           address?: string | null
           city: string
           created_at?: string | null
-          cuisine?: string[]
+          cuisine: string[]
           description?: string | null
           id?: string
           location?: string | null
@@ -158,7 +158,6 @@ export type Database = {
           phone?: string | null
           price_level: string
           rating?: number | null
-          slug?: string | null
           updated_at?: string | null
           website?: string | null
         }
@@ -175,9 +174,56 @@ export type Database = {
           phone?: string | null
           price_level?: string
           rating?: number | null
-          slug?: string | null
           updated_at?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          display_order: number
+          is_active: boolean
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          display_order?: number
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      restaurant_categories: {
+        Row: {
+          restaurant_id: string
+          category_id: string
+          created_at: string | null
+        }
+        Insert: {
+          restaurant_id: string
+          category_id: string
+          created_at?: string | null
+        }
+        Update: {
+          restaurant_id?: string
+          category_id?: string
+          created_at?: string | null
         }
         Relationships: []
       }

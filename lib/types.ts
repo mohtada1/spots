@@ -47,8 +47,25 @@ export interface SearchFilters {
   priceLevel: string[]
 }
 
+export interface Category {
+  id: string
+  title: string
+  description: string | null
+  display_order: number
+  is_active: boolean
+  created_at: string | null
+  updated_at: string | null
+}
+
+export interface RestaurantCategory {
+  restaurant_id: string
+  category_id: string
+  created_at: string | null
+}
+
 export interface AdminUser {
   id: string
   email: string
+  role: 'admin' | 'super_admin'
   created_at: string
 }

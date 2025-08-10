@@ -11,7 +11,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getRestaurantUrl } from "@/lib/utils/urls"
 import { getTodayHours } from "@/lib/utils/hours"
-import type { Restaurant, SearchFilters } from "@/lib/types"
+import type { Restaurant, SearchFilters, Category } from "@/lib/types"
 import { api } from "@/lib/api"
 
 // Utility function to format ISO datetime to readable time
@@ -30,21 +30,38 @@ const formatTimeSlot = (isoString: string): string => {
 
 export default function HomePage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [categoryRestaurants, setCategoryRestaurants] = useState<Record<string, Restaurant[]>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCuisine, setSelectedCuisine] = useState("All Restaurants")
   const router = useRouter()
 
   useEffect(() => {
-    loadRestaurants()
+    loadData()
   }, [])
 
-  const loadRestaurants = async () => {
+  const loadData = async () => {
     try {
-      const data = await api.getRestaurants()
-      setRestaurants(data)
+      // Load categories
+      const categoriesResponse = await fetch('/api/categories')
+      const categoriesData = await categoriesResponse.json()
+      setCategories(categoriesData)
+
+      // Load restaurants for each category
+      const categoryRestaurantsData: Record<string, Restaurant[]> = {}
+      for (const category of categoriesData) {
+        const restaurantsResponse = await fetch(`/api/categories/${category.id}/restaurants`)
+        const restaurantsData = await restaurantsResponse.json()
+        categoryRestaurantsData[category.id] = restaurantsData
+      }
+      setCategoryRestaurants(categoryRestaurantsData)
+
+      // Load all restaurants for search
+      const allRestaurants = await api.getRestaurants()
+      setRestaurants(allRestaurants)
     } catch (error) {
-      console.error("Error loading restaurants:", error)
+      console.error("Error loading data:", error)
     } finally {
       setIsLoading(false)
     }
@@ -64,32 +81,13 @@ export default function HomePage() {
     router.push(url)
   }
 
-  // Filter restaurants by category
-  const getRestaurantsByCategory = (category: string) => {
-    switch (category) {
-      case "featured":
-        // Get top-rated restaurants as "featured"
-        return restaurants.filter(r => r.rating && r.rating >= 4.5).slice(0, 4)
-      case "nearby":
-        // Get restaurants in the same city as "nearby"
-        return restaurants.slice(0, 4)
-      case "topRated":
-        return restaurants.filter(r => r.rating && r.rating >= 4.7).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4)
-      case "bookNow":
-        // Get restaurants that are open now
-        return restaurants.slice(0, 4)
-      default:
-        return restaurants.slice(0, 4)
-    }
+  // Get restaurants by category ID
+  const getRestaurantsByCategory = (categoryId: string) => {
+    return categoryRestaurants[categoryId] || []
   }
 
   // Restaurant card component for horizontal carousels
-  const RestaurantCard = ({ restaurant, showBadge = false, badgeText = "", badgeColor = "bg-red-500" }: { 
-    restaurant: Restaurant, 
-    showBadge?: boolean, 
-    badgeText?: string,
-    badgeColor?: string 
-  }) => (
+  const RestaurantCard = ({ restaurant }: { restaurant: Restaurant }) => (
     <Card 
       className="w-72 flex-shrink-0 shadow-sm hover:shadow-md transition-shadow duration-200 border-0 bg-white rounded-xl overflow-hidden cursor-pointer"
       onClick={() => handleRestaurantClick(restaurant)}
@@ -118,10 +116,10 @@ export default function HomePage() {
           </div>
           
           {/* Status Badge */}
-          {showBadge && (
+          {false && (
             <div className="absolute top-2 left-2">
-              <Badge className={`text-xs font-medium text-white ${badgeColor} hover:${badgeColor}`}>
-                {badgeText}
+              <Badge className={`text-xs font-medium text-white ${''} hover:${''}`}>
+                {''}
               </Badge>
             </div>
           )}
@@ -339,7 +337,7 @@ export default function HomePage() {
       <div className="px-4 py-6 bg-white">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">
-            Restaurants in San Francisco ({restaurants.length} found)
+            Restaurants in Karachi ({restaurants.length} found)
           </h3>
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Filter className="w-4 h-4" />
@@ -394,83 +392,27 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="space-y-8 mt-6">
-            {/* Featured Section */}
-            <section className="px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                  <h2 className="text-xl font-bold text-gray-900">Featured</h2>
-                  <span className="text-sm text-gray-600">Handpicked by our experts</span>
+            {/* Dynamic Category Sections */}
+            {categories.map((category) => (
+              <section key={category.id} className="px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                    <h2 className="text-xl font-bold text-gray-900">{category.title}</h2>
+                    {category.description && (
+                      <span className="text-sm text-gray-600">{category.description}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                    {getRestaurantsByCategory(category.id).map((restaurant) => (
+                      <RestaurantCard 
+                        key={restaurant.id} 
+                        restaurant={restaurant}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                  {getRestaurantsByCategory("featured").map((restaurant) => (
-                    <RestaurantCard 
-                      key={restaurant.id} 
-                      restaurant={restaurant} 
-                      showBadge={true}
-                      badgeText="Featured"
-                      badgeColor="bg-red-500"
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Nearby & Available Section */}
-            <section className="px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                  <h2 className="text-xl font-bold text-gray-900">Nearby & Available</h2>
-                  <span className="text-sm text-gray-600">Close to you with open tables</span>
-                </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                  {getRestaurantsByCategory("nearby").map((restaurant) => (
-                    <RestaurantCard 
-                      key={restaurant.id} 
-                      restaurant={restaurant} 
-                      showBadge={true}
-                      badgeText="Available"
-                      badgeColor="bg-green-500"
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Top Rated Section */}
-            <section className="px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                  <h2 className="text-xl font-bold text-gray-900">Top Rated</h2>
-                  <span className="text-sm text-gray-600">Highest rated restaurants</span>
-                </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                  {getRestaurantsByCategory("topRated").map((restaurant) => (
-                    <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Book Now Section */}
-            <section className="px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                  <h2 className="text-xl font-bold text-gray-900">Book Now</h2>
-                  <span className="text-sm text-gray-600">Limited availability - reserve quickly</span>
-                </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                  {getRestaurantsByCategory("bookNow").map((restaurant) => (
-                    <RestaurantCard 
-                      key={restaurant.id} 
-                      restaurant={restaurant} 
-                      showBadge={true}
-                      badgeText="Featured"
-                      badgeColor="bg-red-500"
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
+              </section>
+            ))}
 
             {/* All Restaurants Grid Section */}
             <section className="mt-8">
