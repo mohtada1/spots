@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { getRestaurantUrl } from "@/lib/utils/urls"
 import type { Restaurant, SearchFilters } from "@/lib/types"
 import { api } from "@/lib/api"
 
@@ -58,7 +59,8 @@ export default function HomePage() {
 
   // Navigate to restaurant detail page
   const handleRestaurantClick = (restaurantId: string) => {
-    router.push(`/restaurant/${restaurantId}`)
+    // Need restaurant name for URL generation - this should be updated to pass full restaurant object
+    router.push(`/restaurant/${restaurantId}`) // TODO: Update to use getRestaurantUrl when restaurant object is available
   }
 
   // Filter restaurants by category

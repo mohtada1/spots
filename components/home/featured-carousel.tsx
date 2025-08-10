@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { getRestaurantUrl } from "@/lib/utils/urls"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react"
@@ -51,7 +52,7 @@ export function FeaturedCarousel({ restaurants }: FeaturedCarouselProps) {
               key={restaurant.id}
               className="rounded-food-small overflow-hidden transition-shadow duration-200 hover:shadow-md group cursor-pointer border-0 shadow-sm bg-food-background"
             >
-              <Link href={`/restaurant/${restaurant.id}`}>
+              <Link href={getRestaurantUrl(restaurant)}>
                 <div className="relative h-48 overflow-hidden bg-gray-100">
                   <Image
                     src={restaurant.image_url || '/placeholder.svg?height=300&width=400'}

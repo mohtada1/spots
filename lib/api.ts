@@ -1,6 +1,8 @@
 import { supabase } from "./supabase"
 import type { Restaurant, Reservation, SearchFilters } from "./types"
 
+import { parseSlugId } from './utils/slug'
+
 export const api = {
   // Restaurant operations
   async getRestaurants(filters?: Partial<SearchFilters>): Promise<Restaurant[]> {

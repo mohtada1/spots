@@ -40,10 +40,27 @@ export async function POST(
       return NextResponse.json({ error: "Admin access required" }, { status: 403 })
     }
 
-    // Upload to Vercel Blob with organized path structure
+    // Get restaurant name for SEO-friendly filename
+    const { data: restaurant, error: restaurantError } = await supabaseAdmin
+      .from("restaurants")
+      .select("name")
+      .eq("id", id)
+      .single()
+
+    if (restaurantError || !restaurant) {
+      return NextResponse.json({ error: "Restaurant not found" }, { status: 404 })
+    }
+
+    // Create SEO-friendly filename
     const timestamp = Date.now()
     const fileExtension = file.name.split('.').pop() || 'jpg'
-    const fileName = `${timestamp}.${fileExtension}`
+    const restaurantSlug = restaurant.name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    const fileName = `${restaurantSlug}-${timestamp}.${fileExtension}`
     
     const blob = await put(`restaurant-images/${id}/${fileName}`, file, {
       access: 'public'

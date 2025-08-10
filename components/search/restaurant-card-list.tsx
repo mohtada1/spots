@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { getRestaurantUrl } from "@/lib/utils/urls"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, MapPin, Clock } from "lucide-react"
@@ -75,7 +76,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
             <CardContent className="flex-1 p-food-md md:p-food-lg">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div className="flex-1">
-                  <Link href={`/restaurant/${restaurant.id}`}>
+                  <Link href={getRestaurantUrl(restaurant)}>
                     <h3 className="text-xl font-medium font-poppins mb-food-sm group-hover:text-food-primary transition-colors duration-200 cursor-pointer text-food-text">
                       {restaurant.name}
                     </h3>
@@ -106,7 +107,7 @@ export function RestaurantCardList({ restaurants, isLoading }: RestaurantCardLis
                 </div>
 
                 <div className="mt-food-md md:mt-0 md:ml-food-lg">
-                  <Link href={`/restaurant/${restaurant.id}`}>
+                  <Link href={getRestaurantUrl(restaurant)}>
                     <Button className="w-full md:w-auto">View & Reserve</Button>
                   </Link>
                 </div>

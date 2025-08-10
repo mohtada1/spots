@@ -34,7 +34,7 @@ export function RestaurantManager({
 
   const cuisineOptions = ["Pakistani", "BBQ", "Continental", "Italian", "Chinese", "Fast Food", "Desserts", "Asian"]
   const cities = ["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Faisalabad", "Multan"]
-  const priceLevels = ["₨", "₨₨", "₨₨₨", "₨₨₨₨"]
+  const priceLevels = ["$", "$$", "$$$", "$$$$"]
 
   const toggleCard = (restaurantId: string) => {
     const newExpanded = new Set(expandedCards)
@@ -307,8 +307,7 @@ export function RestaurantManager({
         {restaurants.map((restaurant) => (
           <Card 
             key={restaurant.id} 
-            className="border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white rounded-lg cursor-pointer"
-            onClick={() => toggleCard(restaurant.id)}
+            className="border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white rounded-lg"
           >
             {expandedCards.has(restaurant.id) ? (
               // Edit Form
@@ -400,7 +399,10 @@ export function RestaurantManager({
             ) : (
               // Collapsed Display Mode
               <CardContent className="p-6">
-                <div className="flex justify-between items-start">
+                <div 
+                  className="flex justify-between items-start cursor-pointer"
+                  onClick={() => toggleCard(restaurant.id)}
+                >
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold mb-2">{restaurant.name}</h3>
                     <div className="flex flex-wrap gap-2 mb-2">
@@ -418,7 +420,8 @@ export function RestaurantManager({
                     )}
                     {restaurant.address && <p className="text-sm text-muted-foreground">{restaurant.address}</p>}
                   </div>
-                  <div className="flex space-x-2 ml-4">
+                  <div className="flex items-center space-x-2 ml-4">
+                    <ChevronDown className="h-5 w-5 text-gray-400" />
                     <Button
                       onClick={(e) => {
                         e.stopPropagation()
