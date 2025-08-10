@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ImageGallery } from "@/components/ui/image-gallery"
 import { RestaurantBooking } from "@/components/restaurant/restaurant-booking"
 import { RestaurantMap } from "@/components/restaurant/restaurant-map"
+import { RestaurantHours } from "@/components/restaurant/restaurant-hours"
 import { supabase } from "@/lib/supabase"
 import { parseSlugId } from "@/lib/utils/slug"
 import { MapPin, Phone, Clock } from "lucide-react"
@@ -241,12 +242,7 @@ export default async function RestaurantPage({ params }: { params: { 'slug-id': 
                         <span>{restaurant.phone}</span>
                       </div>
                     )}
-                    {restaurant.opening_hours && (
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span>{restaurant.opening_hours}</span>
-                      </div>
-                    )}
+
                   </div>
                 </div>
 
@@ -268,6 +264,10 @@ export default async function RestaurantPage({ params }: { params: { 'slug-id': 
                     <h3 className="text-lg font-semibold mb-3 text-food-text">About</h3>
                     <p className="text-gray-600 leading-relaxed">{restaurant.description}</p>
                   </div>
+                )}
+
+                {restaurant.opening_hours && (
+                  <RestaurantHours hoursString={restaurant.opening_hours} />
                 )}
 
                 {/* Map Section - Desktop: Below About, Mobile: Will be moved to bottom */}

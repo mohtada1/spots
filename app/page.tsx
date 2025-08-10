@@ -10,6 +10,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getRestaurantUrl } from "@/lib/utils/urls"
+import { getTodayHours } from "@/lib/utils/hours"
 import type { Restaurant, SearchFilters } from "@/lib/types"
 import { api } from "@/lib/api"
 
@@ -162,9 +163,9 @@ export default function HomePage() {
 
           {/* Opening Hours */}
           <div className="flex gap-1">
-            <Badge variant="outline" className="text-xs px-2 py-1">
-              <Clock className="h-3 w-3 mr-1" />
-              {restaurant.opening_hours || "12:00 PM - 11:00 PM"}
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {restaurant.opening_hours ? getTodayHours(restaurant.opening_hours) : "Hours not available"}
             </Badge>
           </div>
         </div>
