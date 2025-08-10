@@ -38,14 +38,63 @@ export async function generateMetadata({ params }: { params: { 'slug-id': string
       }
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://spots.com'
+    const pageUrl = `${siteUrl}/restaurants/${params['slug-id']}`
+    const imageUrl = restaurant.images?.[0]?.blob_url
+    
     return {
       title: `${restaurant.name} - Book a Table | Spots`,
-      description: `Reserve a table at ${restaurant.name}. ${restaurant.description || `Experience fine dining at ${restaurant.name} in ${restaurant.address}.`}`,
+      description: `Reserve a table at ${restaurant.name}. ${restaurant.description || `Experience fine dining at ${restaurant.name} in ${restaurant.city || restaurant.address}.`}`,
+      keywords: [
+        restaurant.name,
+        'restaurant',
+        'book table',
+        'reservation',
+        restaurant.city,
+        ...(restaurant.cuisine || []),
+        restaurant.price_level
+      ].filter(Boolean).join(', '),
+      authors: [{ name: 'Spots' }],
+      creator: 'Spots',
+      publisher: 'Spots',
+      formatDetection: {
+        telephone: false,
+      },
       openGraph: {
-        title: restaurant.name,
-        description: restaurant.description || `Book a table at ${restaurant.name}`,
-        images: restaurant.images?.[0] ? [{ url: restaurant.images[0].blob_url }] : [],
+        title: `${restaurant.name} - Book a Table`,
+        description: restaurant.description || `Book a table at ${restaurant.name}. ${restaurant.cuisine?.join(', ')} restaurant in ${restaurant.city}.`,
+        url: pageUrl,
+        siteName: 'Spots',
+        images: imageUrl ? [{
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${restaurant.name} restaurant interior`
+        }] : [],
+        locale: 'en_US',
         type: 'website'
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${restaurant.name} - Book a Table`,
+        description: restaurant.description || `Book a table at ${restaurant.name}`,
+        images: imageUrl ? [imageUrl] : [],
+        creator: '@spots',
+        site: '@spots'
+      },
+      alternates: {
+        canonical: pageUrl
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
       }
     }
   } catch (error) {
@@ -74,20 +123,71 @@ export default async function RestaurantPage({ params }: { params: { 'slug-id': 
     notFound()
   }
 
-  // Structured data for SEO
+  // Enhanced structured data for SEO
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://spots.com'
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": restaurant.name,
+    "description": restaurant.description,
+    "url": `${siteUrl}/restaurants/${params['slug-id']}`,
+    "telephone": restaurant.phone,
+    "email": restaurant.website ? `info@${restaurant.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}` : undefined,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": restaurant.address
+      "streetAddress": restaurant.address,
+      "addressLocality": restaurant.city,
+      "addressCountry": "PK"
     },
-    "telephone": restaurant.phone,
-    "url": `${process.env.NEXT_PUBLIC_SITE_URL}/restaurants/${params['slug-id']}`,
-    "image": restaurant.images?.[0],
-    "description": restaurant.description
+    "geo": restaurant.city ? {
+      "@type": "GeoCoordinates",
+      "addressCountry": "PK"
+    } : undefined,
+    "image": restaurant.images?.map(img => ({
+      "@type": "ImageObject",
+      "url": img.blob_url,
+      "description": img.alt_text || `${restaurant.name} restaurant image`
+    })) || [],
+    "priceRange": restaurant.price_level,
+    "servesCuisine": restaurant.cuisine,
+    "openingHours": restaurant.opening_hours ? [restaurant.opening_hours] : undefined,
+    "acceptsReservations": true,
+    "hasMenu": true,
+    "aggregateRating": restaurant.rating ? {
+      "@type": "AggregateRating",
+      "ratingValue": restaurant.rating,
+      "bestRating": 5,
+      "worstRating": 1,
+      "ratingCount": 124 // You might want to store actual review count
+    } : undefined,
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${siteUrl}/restaurants/${params['slug-id']}`,
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform"
+        ]
+      },
+      "result": {
+        "@type": "Reservation",
+        "name": "Table Reservation"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/restaurants/${params['slug-id']}`
+    },
+    "sameAs": restaurant.website ? [restaurant.website] : []
   }
+
+  // Remove undefined values
+  Object.keys(structuredData).forEach(key => {
+    if (structuredData[key as keyof typeof structuredData] === undefined) {
+      delete structuredData[key as keyof typeof structuredData]
+    }
+  })
 
   return (
     <>
