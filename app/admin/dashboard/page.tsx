@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,11 +20,30 @@ function AdminDashboardContent() {
   const { toast } = useToast()
   const { session, signOut } = useAdminAuth()
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [refreshKey, setRefreshKey] = useState(0)
+  const router = useRouter()
 
   useEffect(() => {
-    fetchReservations()
-    fetchRestaurants()
-  }, [])
+    if (session?.access_token) {
+      // Clear any browser storage that might cache data
+      if (typeof window !== 'undefined') {
+        // Clear localStorage and sessionStorage
+        Object.keys(localStorage).forEach(key => {
+          if (key.includes('reservation') || key.includes('admin')) {
+            localStorage.removeItem(key)
+          }
+        })
+        Object.keys(sessionStorage).forEach(key => {
+          if (key.includes('reservation') || key.includes('admin')) {
+            sessionStorage.removeItem(key)
+          }
+        })
+      }
+      
+      fetchReservations()
+      fetchRestaurants()
+    }
+  }, [session?.access_token])
 
   const fetchReservations = async () => {
     try {
@@ -31,15 +51,22 @@ function AdminDashboardContent() {
         throw new Error("No access token")
       }
 
-      const response = await fetch("/api/admin/reservations", {
+      // Add timestamp to force fresh request
+      const timestamp = Date.now()
+      const response = await fetch(`/api/admin/reservations?t=${timestamp}`, {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
         },
+        cache: 'no-store',
       })
 
       const result = await response.json()
 
       if (result.success) {
+        console.log('Fetched reservations:', result.data)
         setReservations(result.data)
       } else {
         throw new Error(result.error)
@@ -104,6 +131,15 @@ function AdminDashboardContent() {
 
       if (result.success) {
         setReservations((prev) => prev.map((res) => (res.id === reservationId ? result.data : res)))
+
+        // Force refresh to clear any cached data
+        router.refresh()
+        
+        // Force component re-mount and refetch data
+        setRefreshKey(prev => prev + 1)
+        setTimeout(() => {
+          fetchReservations()
+        }, 100)
 
         toast({
           title: status === "confirmed" ? "Reservation Confirmed" : "Reservation Cancelled",
@@ -256,7 +292,7 @@ function AdminDashboardContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div key={refreshKey} className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold font-poppins mb-2">Restaurant Dashboard</h1>
@@ -333,12 +369,17 @@ function AdminDashboardContent() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {reservations.map((reservation) => (
+                {reservations.map((reservation) => {
+                  console.log(`Mapping reservation: ${reservation.customer_name}, Status: ${reservation.status}, ID: ${reservation.id}`)
+                  return (
                   <div key={reservation.id} className="flex items-center justify-between p-4 border rounded-xl">
                     <div className="flex-1">
                       <div className="flex items-center space-x-4">
                         <div>
                           <h4 className="font-medium">{reservation.customer_name}</h4>
+                          <p className="text-sm font-medium text-foreground">
+                            📍 {reservation.restaurant?.name || 'Unknown Restaurant'}
+                          </p>
                           <p className="text-sm text-muted-foreground">
                             {reservation.party_size} people • {reservation.reservation_date} at{" "}
                             {reservation.reservation_time}
@@ -346,6 +387,11 @@ function AdminDashboardContent() {
                           <p className="text-xs text-muted-foreground">
                             {reservation.customer_phone} • ID: {reservation.confirmation_code}
                           </p>
+                          {reservation.restaurant?.city && (
+                            <p className="text-xs text-muted-foreground">
+                              {reservation.restaurant.city} • {reservation.restaurant.cuisine?.join(', ')}
+                            </p>
+                          )}
                         </div>
                       </div>
                       {reservation.special_requests && (
@@ -388,7 +434,8 @@ function AdminDashboardContent() {
                       )}
                     </div>
                   </div>
-                ))}
+                  )
+                })}
                 {reservations.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground">No reservations found</div>
                 )}

@@ -14,5 +14,13 @@ export const createAdminClient = () => {
       autoRefreshToken: false,
       persistSession: false,
     },
+    db: {
+      schema: 'public',
+    },
+    global: {
+      headers: {
+        'apikey': supabaseServiceKey,
+      },
+    },
   })
 }
