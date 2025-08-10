@@ -433,9 +433,7 @@ export function RestaurantManager({
                   </div>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <p className="text-sm text-gray-500">Click to expand and edit</p>
-                </div>
+
               </CardContent>
             )}
           </Card>
