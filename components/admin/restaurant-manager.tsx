@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { RestaurantImageManager } from "@/components/admin/restaurant-image-manager"
-import { Plus, Edit, Trash2, Save, X } from "lucide-react"
+import { Plus, Edit, Trash2, Save, X, ChevronDown, ChevronUp, Images } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import type { Restaurant } from "@/lib/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -27,7 +27,7 @@ export function RestaurantManager({
   onRestaurantDeleted,
   onRestaurantCreated,
 }: RestaurantManagerProps) {
-  const [editingId, setEditingId] = useState<string | null>(null)
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
   const [isCreating, setIsCreating] = useState(false)
   const [formData, setFormData] = useState<Partial<Restaurant>>({})
   const { toast } = useToast()
@@ -36,9 +36,19 @@ export function RestaurantManager({
   const cities = ["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Faisalabad", "Multan"]
   const priceLevels = ["₨", "₨₨", "₨₨₨", "₨₨₨₨"]
 
-  const startEdit = (restaurant: Restaurant) => {
-    setEditingId(restaurant.id)
-    setFormData(restaurant)
+  const toggleCard = (restaurantId: string) => {
+    const newExpanded = new Set(expandedCards)
+    if (newExpanded.has(restaurantId)) {
+      newExpanded.delete(restaurantId)
+      setFormData({}) // Clear form data when collapsing
+    } else {
+      newExpanded.add(restaurantId)
+      const restaurant = restaurants.find(r => r.id === restaurantId)
+      if (restaurant) {
+        setFormData(restaurant) // Load restaurant data when expanding
+      }
+    }
+    setExpandedCards(newExpanded)
   }
 
   const startCreate = () => {
@@ -48,16 +58,16 @@ export function RestaurantManager({
       city: "",
       cuisine: [],
       price_level: "$$",
-      rating: 0,
+      rating: 4.0,
       description: "",
       address: "",
       phone: "",
+      website: "",
       opening_hours: "",
     })
   }
 
-  const cancelEdit = () => {
-    setEditingId(null)
+  const cancelCreate = () => {
     setIsCreating(false)
     setFormData({})
   }
@@ -89,15 +99,9 @@ export function RestaurantManager({
         await onRestaurantCreated(newRestaurantData)
         setIsCreating(false)
       } else {
-        // Update existing restaurant via API - exclude image-related fields
-        const { image_url, images, ...cleanFormData } = formData as any
-        const updatedRestaurant: Restaurant = {
-          ...cleanFormData,
-          city: cleanFormData.city || cleanFormData.address || "Karachi",
-          price_level: cleanFormData.price_level || "$$",
-        }
-        await onRestaurantUpdated(updatedRestaurant)
-        setEditingId(null)
+        // Update existing restaurant
+        await onRestaurantUpdated(formData as Restaurant)
+        // Keep the card expanded after saving
       }
 
       setFormData({})
@@ -142,6 +146,8 @@ export function RestaurantManager({
 
     setFormData({ ...formData, cuisine: newCuisines })
   }
+
+
 
   return (
     <div className="space-y-food-lg">
@@ -287,7 +293,7 @@ export function RestaurantManager({
                 <Save className="h-4 w-4 mr-2" />
                 Create Restaurant
               </Button>
-              <Button onClick={cancelEdit} variant="outline">
+              <Button onClick={cancelCreate} variant="outline">
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
@@ -299,8 +305,12 @@ export function RestaurantManager({
       {/* Restaurant List */}
       <div className="grid grid-cols-1 gap-6">
         {restaurants.map((restaurant) => (
-          <Card key={restaurant.id} className="rounded-food-small border-0 shadow-sm bg-food-background">
-            {editingId === restaurant.id ? (
+          <Card 
+            key={restaurant.id} 
+            className="border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white rounded-lg cursor-pointer"
+            onClick={() => toggleCard(restaurant.id)}
+          >
+            {expandedCards.has(restaurant.id) ? (
               // Edit Form
               <CardContent className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -358,14 +368,37 @@ export function RestaurantManager({
                     <Save className="h-4 w-4 mr-2" />
                     Save Changes
                   </Button>
-                  <Button onClick={cancelEdit} variant="outline" className="rounded-xl">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleCard(restaurant.id)
+                    }} 
+                    variant="outline" 
+                    className="rounded-xl"
+                  >
                     <X className="h-4 w-4 mr-2" />
-                    Cancel
+                    Close
                   </Button>
+                </div>
+
+                {/* Image Management Section */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Images className="h-5 w-5" />
+                    Image Management
+                  </h4>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <RestaurantImageManager 
+                      restaurantId={restaurant.id}
+                      onImagesUpdated={() => {
+                        console.log('Images updated for restaurant:', restaurant.id)
+                      }}
+                    />
+                  </div>
                 </div>
               </CardContent>
             ) : (
-              // Display Mode
+              // Collapsed Display Mode
               <CardContent className="p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -376,7 +409,6 @@ export function RestaurantManager({
                           {cuisine}
                         </Badge>
                       ))}
-
                     </div>
                     <p className="text-muted-foreground text-sm mb-2">
                       {restaurant.city} • {restaurant.price_level} • ⭐ {restaurant.rating}
@@ -387,11 +419,11 @@ export function RestaurantManager({
                     {restaurant.address && <p className="text-sm text-muted-foreground">{restaurant.address}</p>}
                   </div>
                   <div className="flex space-x-2 ml-4">
-                    <Button onClick={() => startEdit(restaurant)} variant="outline" size="sm" className="rounded-xl">
-                      <Edit className="h-4 w-4" />
-                    </Button>
                     <Button
-                      onClick={() => handleDelete(restaurant.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDelete(restaurant.id)
+                      }}
                       variant="outline"
                       size="sm"
                       className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl"
@@ -401,15 +433,8 @@ export function RestaurantManager({
                   </div>
                 </div>
                 
-                {/* Image Management Section */}
-                <div className="mt-6 pt-6 border-t">
-                  <RestaurantImageManager 
-                    restaurantId={restaurant.id}
-                    onImagesUpdated={() => {
-                      // Refresh restaurant data if needed
-                      console.log('Images updated for restaurant:', restaurant.id)
-                    }}
-                  />
+                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
+                  <p className="text-sm text-gray-500">Click to expand and edit</p>
                 </div>
               </CardContent>
             )}

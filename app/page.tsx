@@ -94,10 +94,10 @@ export default function HomePage() {
       <CardContent className="p-0">
         {/* Restaurant Image */}
         <div className="relative h-32 bg-gray-200">
-          {restaurant.images?.[0]?.blob_url ? (
+          {restaurant.images?.find(img => img.is_primary)?.blob_url || restaurant.images?.[0]?.blob_url ? (
             <img 
-              src={restaurant.images[0].blob_url} 
-              alt={restaurant.images[0].alt_text || restaurant.name}
+              src={restaurant.images?.find(img => img.is_primary)?.blob_url || restaurant.images?.[0]?.blob_url} 
+              alt={restaurant.images?.find(img => img.is_primary)?.alt_text || restaurant.images?.[0]?.alt_text || restaurant.name}
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
@@ -110,7 +110,7 @@ export default function HomePage() {
           ) : null}
           
           {/* Fallback placeholder - shown when no images or on error */}
-          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.images?.[0]?.blob_url ? 'hidden' : ''}`}>
+          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${restaurant.images?.find(img => img.is_primary)?.blob_url || restaurant.images?.[0]?.blob_url ? 'hidden' : ''}`}>
             <span className="text-gray-400 text-2xl">🍽️</span>
           </div>
           
@@ -185,10 +185,10 @@ export default function HomePage() {
         <CardContent className="p-0">
           {/* Restaurant Image */}
           <div className="relative h-48 bg-gray-200">
-            {restaurant.images?.[0]?.blob_url ? (
+            {restaurant.images?.find(img => img.is_primary)?.blob_url || restaurant.images?.[0]?.blob_url ? (
               <img 
-                src={restaurant.images[0].blob_url} 
-                alt={restaurant.images[0].alt_text || restaurant.name}
+                src={restaurant.images?.find(img => img.is_primary)?.blob_url || restaurant.images?.[0]?.blob_url} 
+                alt={restaurant.images?.find(img => img.is_primary)?.alt_text || restaurant.images?.[0]?.alt_text || restaurant.name}
                 className="w-full h-full object-cover"
                 loading="lazy"
                 onError={(e) => {
