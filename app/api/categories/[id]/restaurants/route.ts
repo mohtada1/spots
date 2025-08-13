@@ -28,7 +28,14 @@ export async function GET(
           location,
           website,
           created_at,
-          updated_at
+          updated_at,
+          images:restaurant_images(
+            id,
+            blob_url,
+            alt_text,
+            display_order,
+            is_primary
+          )
         )
       `)
       .eq('category_id', params.id)
