@@ -5,7 +5,6 @@ import "./globals.css"
 import { Header } from "@/components/layout/header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { AdminAuthProvider } from "@/lib/admin-auth-context"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,11 +32,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${poppins.variable} font-inter`}>
         <ThemeProvider attribute="class" defaultTheme="light">
-          <AdminAuthProvider>
-            <Header />
-            <main className="min-h-screen pt-16">{children}</main>
-            <Toaster />
-          </AdminAuthProvider>
+          <Header />
+          <main className="min-h-screen pt-16">{children}</main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

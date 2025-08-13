@@ -9,7 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/admin/',
           '/api/',
           '/pending/',
           '/_next/',
@@ -20,7 +19,6 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Googlebot',
         allow: '/',
         disallow: [
-          '/admin/',
           '/api/',
           '/pending/',
         ],
